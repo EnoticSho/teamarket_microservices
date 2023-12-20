@@ -1,0 +1,3 @@
+rootProject.name = 'teamarket'
+include 'core-service'
+
