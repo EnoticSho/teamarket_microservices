@@ -2,7 +2,6 @@ package com.example.teamarket.cart.service.impl;
 
 import com.example.teamarket.cart.dto.CartDto;
 import com.example.teamarket.cart.dto.InfoProductDto;
-import com.example.teamarket.cart.exception.ResourceNotFoundException;
 import com.example.teamarket.cart.integration.ProductServiceIntegration;
 import com.example.teamarket.cart.mapper.CartMapper;
 import com.example.teamarket.cart.model.Cart;
@@ -31,8 +30,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addItemToCart(Long productId) {
-        InfoProductDto infoProductDto = productServiceIntegration.getProductById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Не удалось найти продукт с id: " + productId));
+        InfoProductDto infoProductDto = productServiceIntegration.getProductById(productId);
         tempCart.addItem(infoProductDto);
     }
 
