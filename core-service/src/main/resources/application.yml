@@ -2,7 +2,10 @@ server:
   port: 8080
   servlet:
     context-path: /core
+
 spring:
+  application:
+    name: core-service
   datasource:
     driver-class-name: org.postgresql.Driver
     password: root
@@ -15,3 +18,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

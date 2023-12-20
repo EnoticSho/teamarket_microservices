@@ -1,4 +1,5 @@
 rootProject.name = 'teamarket'
 include 'core-service'
 include 'cart-service'
+include 'discovery-service'
 
