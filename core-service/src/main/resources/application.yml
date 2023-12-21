@@ -2,12 +2,23 @@ server:
   port: 8080
   servlet:
     context-path: /core
+
 spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: core-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: root
-    username: root
-    url: jdbc:postgresql://localhost:5432/database
+    password: ${POSTGRES_PASSWORD:root}
+    username: ${POSTGRES_USERNAME:root}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE:database}
   liquibase:
     change-log: migration/db-changelog.sql
   jpa:
@@ -15,3 +26,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
