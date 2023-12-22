@@ -2,4 +2,7 @@ rootProject.name = 'teamarket'
 include 'core-service'
 include 'cart-service'
 include 'discovery-service'
+include 'api-gateway'
+include 'api-gateway'
+include 'config-server'
 

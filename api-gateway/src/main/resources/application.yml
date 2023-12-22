@@ -1,0 +1,67 @@
+server:
+  port: 5555
+  servlet:
+    context-path: /gateway
+
+spring:
+  profiles:
+    active: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - PATCH
+            allowedHeaders: "*"
+      routes:
+        - id: core-service
+          uri: lb://core-service/
+          predicates:
+            - Path=/core/**
+        - id: cart-service
+          uri: lb://cart-service/
+          predicates:
+            - Path=/cart/**
+        - id: discovery-server
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/web
+          filters:
+            - SetPath=/
+        - id: discovery-server-static
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
+
+
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+      cloud:
+        gateway:
+          route:
+            RouteDefinitionLocator: info

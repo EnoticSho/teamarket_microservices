@@ -37,6 +37,20 @@ services:
       - eureka-service
       - core-service
 
+  api-gateway:
+    build:
+      context: api-gateway
+      dockerfile: Dockerfile
+    domainname: api-gateway
+    container_name: api-gateway
+    ports:
+      - "5555:5555"
+    restart: always
+    networks:
+      - some-net
+    depends_on:
+      - eureka-service
+
   core-service:
     build:
       context: core-service
@@ -60,8 +74,9 @@ services:
     networks:
       - some-net
     depends_on:
-      - postgres
       - eureka-service
+      - postgres
+
 
   eureka-service:
     build:
