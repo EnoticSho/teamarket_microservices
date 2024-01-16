@@ -7,4 +7,5 @@ include 'api-gateway'
 include 'config-server'
 include 'config-service'
 include 'auth-service'
+include 'order-service'
 

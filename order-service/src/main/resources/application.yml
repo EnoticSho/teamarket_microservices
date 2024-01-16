@@ -1,0 +1,39 @@
+server:
+  port: 8991
+  servlet:
+    context-path: /order
+
+spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: order-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: ${POSTGRES_PASSWORD:root}
+    username: ${POSTGRES_USERNAME:root}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE:database}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+integrations:
+  cart-service:
+    url: http://${CART_HOST:localhost}:${CART_PORT:8090}/cart
+    read-timeout: 10000
+    write-timeout: 5000
+    connect-timeout: 5000
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/

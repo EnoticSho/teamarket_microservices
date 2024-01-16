@@ -1,12 +1,13 @@
 package com.example.teamarket.cart.service;
 
-import com.example.teamarket.cart.dto.StringResponse;
-import com.example.teamarket.cart.model.Cart;
+import com.example.teamarket.cart.dto.response.CartDto;
+import com.example.teamarket.cart.dto.response.StringResponse;
 
 public interface CartService {
-    Cart getCurrentCart(String uuid);
-    void addItemToCart(Long productId, String uuid);
-    void removeItemFromCart(Long productId, String uuid);
-    void clear(String uuid);
+    CartDto getCurrentCart(String cartId);
+    void addItemToCart(Long productId, int weight, String cartId);
+    void removeItemFromCart(Long productId, String cartId);
+    void clear(String cartId);
     StringResponse generateUuid();
+    void editItem(String cartId, Long id, int weight);
 }

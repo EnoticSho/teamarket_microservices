@@ -1,6 +1,6 @@
-package com.example.teamarket.cart.config;
+package com.example.teamarket.order.config;
 
-import com.example.teamarket.cart.properties.CoreServiceIntegrationProperties;
+import com.example.teamarket.order.properties.CartServiceIntegrationProperties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -15,10 +15,10 @@ import reactor.netty.tcp.TcpClient;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(CoreServiceIntegrationProperties.class)
-public class AppConfig {
+@EnableConfigurationProperties(CartServiceIntegrationProperties.class)
+public class WebClientConfig {
 
-    private final CoreServiceIntegrationProperties properties;
+    private final CartServiceIntegrationProperties properties;
 
     @Bean
     public WebClient productServiceWebClient() {

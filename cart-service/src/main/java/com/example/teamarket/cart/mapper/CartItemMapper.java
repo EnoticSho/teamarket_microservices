@@ -1,6 +1,6 @@
 package com.example.teamarket.cart.mapper;
 
-import com.example.teamarket.cart.dto.CartItemDto;
+import com.example.teamarket.cart.dto.response.CartItemDto;
 import com.example.teamarket.cart.model.CartItem;
 import org.mapstruct.Mapper;
 

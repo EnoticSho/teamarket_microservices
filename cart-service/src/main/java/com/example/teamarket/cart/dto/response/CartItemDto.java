@@ -1,4 +1,4 @@
-package com.example.teamarket.cart.dto;
+package com.example.teamarket.cart.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class CartItemDto {
     private Long id;
     private String title;
-    private int quantity;
+    private Integer quantity;
     private BigDecimal pricePer;
     private BigDecimal subPrice;
 }

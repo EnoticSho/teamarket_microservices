@@ -1,75 +1,66 @@
 package com.example.teamarket.cart.model;
 
-import com.example.teamarket.cart.dto.InfoProductDto;
+import com.example.teamarket.cart.dto.response.InfoProductDto;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 
-@ToString
-@Component
 @Getter
-@Setter
+@Component
+@NoArgsConstructor
 public class Cart implements Serializable {
-    private final List<CartItem> itemList;
-    private BigDecimal totalCost;
+    private final Map<Long, CartItem> itemsMap = new HashMap<>();
+    private BigDecimal totalCost = BigDecimal.ZERO;
 
-    public Cart() {
-        this.itemList = new ArrayList<>();
-        this.totalCost = new BigDecimal(0);
-    }
-
-    private void recalculate() {
-        totalCost = BigDecimal.ZERO;
-        for (CartItem cartItem : itemList) {
-            totalCost = totalCost.add(cartItem.getSubPrice());
+    public void addItem(InfoProductDto infoProductDto, int weight) {
+        CartItem cartItem = itemsMap.get(infoProductDto.getProductId());
+        if (cartItem != null) {
+            cartItem.changeQuantity(weight);
         }
-    }
-
-    public void addItem(InfoProductDto infoProductDto) {
-        for (CartItem cartItem : itemList) {
-            if (cartItem.getId().equals(infoProductDto.getProductId())) {
-                cartItem.changeQuantity(1);
-                recalculate();
-                return;
-            }
+        else {
+            cartItem = new CartItem();
+            cartItem.setId(infoProductDto.getProductId());
+            cartItem.setTitle(infoProductDto.getName());
+            cartItem.setQuantity(weight);
+            cartItem.setPricePer(infoProductDto.getPrice());
+            cartItem.setSubPrice(infoProductDto.getPrice()
+                    .multiply(BigDecimal.valueOf(weight).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+            itemsMap.put(infoProductDto.getProductId(), cartItem);
         }
-        CartItem cartItem = new CartItem();
-        cartItem.setId(infoProductDto.getProductId());
-        cartItem.setTitle(infoProductDto.getName());
-        cartItem.setQuantity(1);
-        cartItem.setPricePer(infoProductDto.getPrice());
-        cartItem.setSubPrice(infoProductDto.getPrice());
-        itemList.add(cartItem);
-        totalCost = totalCost.add(cartItem.getSubPrice());
-    }
-
-    public void editCartItem(Long id, int inc) {
-        for (CartItem cartItem : itemList) {
-            if (cartItem.getId().equals(id)) {
-                cartItem.changeQuantity(inc);
-                if (cartItem.getQuantity() == 0) {
-                    itemList.remove(cartItem);
-                    recalculate();
-                    break;
-                }
-                recalculate();
-            }
-        }
-    }
-
-    public void deleteItemById(Long id) {
-        itemList.removeIf(item -> item.getId().equals(id));
         recalculate();
     }
 
-    public void deleteAllItems() {
-        itemList.clear();
+    public void editCartItem(Long id, int weight) {
+        CartItem cartItem = itemsMap.get(id);
+        if (cartItem != null) {
+            cartItem.changeQuantity(weight);
+            if (cartItem.getQuantity() <= 0) {
+                itemsMap.remove(id);
+            }
+            recalculate();
+        }
+    }
+
+    public void removeItemById(Long id) {
+        if (itemsMap.remove(id) != null) {
+            recalculate();
+        }
+    }
+
+    public void removeAllItems() {
+        itemsMap.clear();
         totalCost = BigDecimal.ZERO;
+    }
+
+    private void recalculate() {
+        totalCost = itemsMap.values().stream()
+                .map(CartItem::getSubPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

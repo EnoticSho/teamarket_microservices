@@ -45,6 +45,14 @@ spring:
             - StripPrefix=1
             - PrefixPath=/cart
             - TokenAuthenticationFilter
+        - id: order-service
+          uri: lb://order-service/
+          predicates:
+            - Path=/order/**
+          filters:
+            - StripPrefix=1
+            - PrefixPath=/order
+            - TokenAuthenticationFilter
         - id: discovery-server
           uri: http://localhost:8761
           predicates:
