@@ -6,9 +6,6 @@ import com.example.teamarket.auth.entities.User;
 import com.example.teamarket.auth.services.AuthenticationService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Mapper(componentModel = "spring", uses = AuthenticationService.class)
 public interface UserMapper {
