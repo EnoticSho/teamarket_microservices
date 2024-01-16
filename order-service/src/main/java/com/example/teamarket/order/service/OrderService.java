@@ -28,7 +28,7 @@ public class OrderService {
         order.setOrderDate(Timestamp.from(Instant.now()));
         order.setStatus("Зарегистрирован");
         order.setTotalPrice(cartDto.getTotalCost());
-        List<OrderItem> orderItems = cartDto.getItemList().stream()
+        List<OrderItem> orderItems = cartDto.getItemsMap().values().stream()
                 .map(cartItemDto -> OrderItem.builder()
                         .productId(cartItemDto.getId())
                         .order(order)

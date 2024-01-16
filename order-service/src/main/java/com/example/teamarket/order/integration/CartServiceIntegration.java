@@ -14,14 +14,14 @@ public class CartServiceIntegration {
 
     private final WebClient cartServiceWebClient;
 
-    public CartDto getCartByEmail(String email) {
+    public CartDto getCartByEmail(String cartId) {
         return cartServiceWebClient.get()
                 .uri("/v1/api/cart")
-                .header("email", email) // установка заголовка email
+                .header("cart_id", cartId)
                 .retrieve()
                 .onStatus(
                         httpStatus -> httpStatus.value() == HttpStatus.NOT_FOUND.value(),
-                        clientResponse -> Mono.error(new ResourceNotFoundException("Товар не найден"))
+                        clientResponse -> Mono.error(ResourceNotFoundException.of(cartId, CartDto.class))
                 )
                 .bodyToMono(CartDto.class)
                 .block();

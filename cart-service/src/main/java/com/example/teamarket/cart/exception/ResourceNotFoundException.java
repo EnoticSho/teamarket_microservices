@@ -6,7 +6,8 @@ public class ResourceNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public static ResourceNotFoundException of(Class<?> clazz, Object field) {
-        return new ResourceNotFoundException(clazz.getSimpleName() + " with " + field + " not found!");
+    public static ResourceNotFoundException of(Object resourceId, Class<?> resourceType) {
+        String message = String.format("%s with id: %s not found", resourceType.getSimpleName(), resourceId);
+        return new ResourceNotFoundException(message);
     }
 }

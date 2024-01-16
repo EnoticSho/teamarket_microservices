@@ -1,6 +1,7 @@
 package com.example.teamarket.core.service.impl;
 
-import com.example.teamarket.core.dto.CategoryDto;
+import com.example.teamarket.core.dto.response.InfoCategoryDto;
+import com.example.teamarket.core.entity.Category;
 import com.example.teamarket.core.exception.ResourceNotFoundException;
 import com.example.teamarket.core.mapper.CategoryMapper;
 import com.example.teamarket.core.repository.CategoryRepository;
@@ -15,19 +16,19 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper = CategoryMapper.INSTANCE;
+    private final CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryDto> findAllCategory() {
+    public List<InfoCategoryDto> findAllCategory() {
         return categoryRepository.findAll().stream()
-                .map(categoryMapper::categpryToCategoryDto)
+                .map(categoryMapper::categoryToCategoryDto)
                 .toList();
     }
 
     @Override
-    public CategoryDto findById(Long id) {
+    public InfoCategoryDto findById(Long id) {
         return categoryRepository.findById(id)
-                .map(categoryMapper::categpryToCategoryDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Категория не найдена, id: " + id));
+                .map(categoryMapper::categoryToCategoryDto)
+                .orElseThrow(() -> ResourceNotFoundException.of(id, Category.class));
     }
 }

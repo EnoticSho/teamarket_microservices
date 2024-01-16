@@ -1,6 +1,6 @@
 package com.example.teamarket.core.service;
 
-import com.example.teamarket.core.dto.InfoProductDto;
+import com.example.teamarket.core.dto.response.InfoProductDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -15,7 +15,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public Long saveOrder(@RequestHeader(name = "email") String email) {
-        return orderService.saveOrder(email);
+    public Long saveOrder(@RequestHeader(name = "cart_id") String cartId) {
+        return orderService.saveOrder(cartId);
     }
 }

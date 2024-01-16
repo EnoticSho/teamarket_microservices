@@ -20,7 +20,7 @@ spring:
     username: ${POSTGRES_USERNAME:root}
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE:database}
   liquibase:
-    change-log: migration/db-changelog.sql
+    change-log: migration/db.changelog-master.yml
   jpa:
     show-sql: true
     properties:

@@ -22,7 +22,7 @@ public class CartItem implements Serializable {
 
     public void changeQuantity(int weight) {
         quantity = quantity + weight;
-        subPrice = pricePer.multiply(BigDecimal.valueOf(weight)
+        subPrice = pricePer.multiply(BigDecimal.valueOf(quantity)
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
     }
 }

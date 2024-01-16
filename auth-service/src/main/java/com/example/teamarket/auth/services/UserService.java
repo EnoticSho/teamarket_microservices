@@ -1,6 +1,7 @@
 package com.example.teamarket.auth.services;
 
 import com.example.teamarket.auth.entities.User;
+import com.example.teamarket.auth.exceptions.ResourceNotFoundException;
 import com.example.teamarket.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Нет такого юзера с username: " + email));
+                .orElseThrow(() -> ResourceNotFoundException.of(email, User.class));
     }
 
     public UserDetailsService userDetailsService() {

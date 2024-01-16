@@ -1,4 +1,4 @@
-package com.example.teamarket.order.exception;
+package com.example.teamarket.auth.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
 
@@ -7,7 +7,7 @@ public class ResourceNotFoundException extends RuntimeException {
     }
 
     public static ResourceNotFoundException of(Object resourceId, Class<?> resourceType) {
-        String message = String.format("%s with id: %s not found", resourceType.getSimpleName(), resourceId);
+        String message = String.format("%s with email: %s not found", resourceType.getSimpleName(), resourceId);
         return new ResourceNotFoundException(message);
     }
 }

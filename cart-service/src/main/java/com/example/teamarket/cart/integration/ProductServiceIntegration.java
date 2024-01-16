@@ -20,7 +20,7 @@ public class ProductServiceIntegration {
                 .retrieve()
                 .onStatus(
                         httpStatus -> httpStatus.value() == HttpStatus.NOT_FOUND.value(),
-                        clientResponse -> Mono.error(ResourceNotFoundException.of(InfoProductDto.class, id))
+                        clientResponse -> Mono.error(ResourceNotFoundException.of(id, InfoProductDto.class))
                 )
                 .bodyToMono(InfoProductDto.class)
                 .block();

@@ -1,6 +1,7 @@
 package com.example.teamarket.core.service.impl;
 
-import com.example.teamarket.core.dto.InfoProductDto;
+import com.example.teamarket.core.dto.response.InfoProductDto;
+import com.example.teamarket.core.entity.Product;
 import com.example.teamarket.core.exception.ResourceNotFoundException;
 import com.example.teamarket.core.mapper.ProductMapper;
 import com.example.teamarket.core.repository.ProductRepository;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductMapper productMapper = ProductMapper.INSTANCE;
+    private final ProductMapper productMapper;
 
     @Override
     public List<InfoProductDto> findAllProducts() {
@@ -28,6 +29,6 @@ public class ProductServiceImpl implements ProductService {
     public InfoProductDto findById(Long id) {
         return productRepository.findById(id)
                 .map(productMapper::productToInfoProductDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Продукт не найден, id: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.of(id, Product.class));
     }
 }

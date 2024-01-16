@@ -1,10 +1,10 @@
 package com.example.teamarket.core.service;
 
-import com.example.teamarket.core.dto.CategoryDto;
+import com.example.teamarket.core.dto.response.InfoCategoryDto;
 
 import java.util.List;
 
 public interface CategoryService {
-    List<CategoryDto> findAllCategory();
-    CategoryDto findById(Long id);
+    List<InfoCategoryDto> findAllCategory();
+    InfoCategoryDto findById(Long id);
 }

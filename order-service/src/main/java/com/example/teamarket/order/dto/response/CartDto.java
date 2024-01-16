@@ -5,10 +5,11 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class CartDto {
-    private List<CartItemDto> itemList;
+    private Map<Long, CartItemDto> itemsMap;
     private BigDecimal totalCost;
 }

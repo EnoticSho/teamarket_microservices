@@ -32,6 +32,9 @@ public class TokenAuthenticationFilter extends AbstractGatewayFilterFactory<Toke
                 return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid Authorization header"));
             }
             String token = authorizationHeader.split(" ")[1].trim();
+            if (jwtUtil.isInvalid(token)) {
+                return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token expired"));
+            }
             try {
                 Map<String, Object> claims = jwtUtil.getAllClaimsFromToken(token);
                 String email = (String) claims.get("sub");

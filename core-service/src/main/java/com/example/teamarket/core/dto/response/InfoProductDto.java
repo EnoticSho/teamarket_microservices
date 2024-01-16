@@ -1,4 +1,4 @@
-package com.example.teamarket.core.dto;
+package com.example.teamarket.core.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

@@ -25,6 +25,10 @@ public class JwtUtil {
                 .getPayload();
     }
 
+    public boolean isInvalid(String token) {
+        return this.isTokenExpired(token);
+    }
+
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -34,9 +38,5 @@ public class JwtUtil {
         return getAllClaimsFromToken(token)
                 .getExpiration()
                 .before(new Date());
-    }
-
-    public boolean isInvalid(String token) {
-        return this.isTokenExpired(token);
     }
 }

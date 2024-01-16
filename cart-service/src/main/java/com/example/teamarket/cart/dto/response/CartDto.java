@@ -11,6 +11,6 @@ import java.util.Map;
 @Getter
 @Setter
 public class CartDto {
-    private Map<Long, CartItem> itemsMap;
+    private Map<Long, CartItemDto> itemsMap;
     private BigDecimal totalCost;
 }
