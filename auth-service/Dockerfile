@@ -11,7 +11,6 @@
 #ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
 
-
 FROM openjdk:17-slim
 
 ADD build/libs/*.jar app.jar

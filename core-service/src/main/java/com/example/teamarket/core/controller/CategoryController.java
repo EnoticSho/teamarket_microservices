@@ -13,8 +13,8 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/v1/api/category")
 @RequiredArgsConstructor
+@RequestMapping("/v1/api/category")
 public class CategoryController {
 
     private final CategoryService categoryService;

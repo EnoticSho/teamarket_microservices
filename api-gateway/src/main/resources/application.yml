@@ -33,10 +33,18 @@ spring:
           uri: lb://core-service/
           predicates:
             - Path=/core/**
+          filters:
+            - StripPrefix=1
+            - PrefixPath=/core
+            - TokenAuthenticationFilter
         - id: cart-service
           uri: lb://cart-service/
           predicates:
             - Path=/cart/**
+          filters:
+            - StripPrefix=1
+            - PrefixPath=/cart
+            - TokenAuthenticationFilter
         - id: discovery-server
           uri: http://localhost:8761
           predicates:
@@ -47,6 +55,10 @@ spring:
           uri: http://localhost:8761
           predicates:
             - Path=/eureka/**
+        - id: auth-service
+          uri: lb://auth-service/
+          predicates:
+            - Path=/auth/**
 
 eureka:
   client:
@@ -65,3 +77,6 @@ logging:
         gateway:
           route:
             RouteDefinitionLocator: info
+
+jwt:
+  secret: 46294A404E635266556A586E327235753778214125442A472D4B615064536756

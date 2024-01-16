@@ -1,7 +1,7 @@
 package com.example.teamarket.cart.controller;
 
 import com.example.teamarket.cart.dto.CartDto;
-import com.example.teamarket.cart.dto.InfoProductDto;
+import com.example.teamarket.cart.dto.StringResponse;
 import com.example.teamarket.cart.model.Cart;
 import com.example.teamarket.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +9,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
 
 @RestController
 @CrossOrigin("*")
@@ -24,24 +20,31 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping()
-    public CartDto getCart() {
-        return cartService.getCurrentCart();
+    @GetMapping("/generate_uuid")
+    public StringResponse generateUuid() {
+        return cartService.generateUuid();
     }
 
-    @DeleteMapping("/")
-    public void deleteCart() {
-        cartService.clear();
+    @GetMapping("/{uuid}")
+    public Cart getCart(@PathVariable("uuid") String uuid) {
+        return cartService.getCurrentCart(uuid);
     }
 
-    @DeleteMapping("/remove/{id}")
-    public void deleteCartItem(@PathVariable Long id) {
-        cartService.removeItem(id);
+    @DeleteMapping("/{uuid}")
+    public void deleteCart(@PathVariable("uuid") String uuid) {
+        cartService.clear(uuid);
     }
 
-    @GetMapping("/add/{id}")
-    public void addItemToCart(@PathVariable Long id) {
-        cartService.addItemToCart(id);
+    @DeleteMapping("/{uuid}/remove/{id}")
+    public void deleteCartItem(@PathVariable("uuid") String uuid,
+                               @PathVariable("id") Long id) {
+        cartService.removeItemFromCart(id, uuid);
+    }
+
+    @GetMapping("/{uuid}/add/{id}")
+    public void addItemToCart(@PathVariable("uuid") String uuid,
+                              @PathVariable("id") Long id) {
+        cartService.addItemToCart(id, uuid);
     }
 
 //    @GetMapping("/{uuid}/increment/{id}")

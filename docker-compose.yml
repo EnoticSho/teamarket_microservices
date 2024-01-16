@@ -17,77 +17,87 @@ services:
     networks:
       some-net:
 
-  cart-service:
-    build:
-      context: cart-service
-      dockerfile: Dockerfile
-    container_name: cart-service
-    ports:
-      - "8090:8090"
-    restart: always
+  redis:
+    image: 'bitnami/redis:latest'
+    container_name: redis
     environment:
-      SPRING_PROFILES_ACTIVE: dev
-      CORE_HOST: core-service
-      CORE_PORT: 8080
-      EUREKA_HOST: eureka-service
-      EUREKA_PORT: 8761
-    networks:
-      - some-net
-    depends_on:
-      - eureka-service
-      - core-service
-
-  api-gateway:
-    build:
-      context: api-gateway
-      dockerfile: Dockerfile
-    domainname: api-gateway
-    container_name: api-gateway
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - "5555:5555"
-    restart: always
+      - "6379:6379"
     networks:
       - some-net
-    depends_on:
-      - eureka-service
-
-  core-service:
-    build:
-      context: core-service
-      dockerfile: Dockerfile
-    domainname: core-service
-    container_name: core-service
-    ports:
-      - "8080:8080"
-    restart: always
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      POSTGRES_HOST: postgres
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: database
-      POSTGRES_PORT: 5432
-      EUREKA_HOST: eureka-service
-      EUREKA_PORT: 8761
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    networks:
-      - some-net
-    depends_on:
-      - eureka-service
-      - postgres
-
-
-  eureka-service:
-    build:
-      context: discovery-service
-      dockerfile: Dockerfile
-    container_name: eureka-service
-    ports:
-      - "8761:8761"
-    restart: always
-    networks:
-      - some-net
+#
+#  cart-service:
+#    build:
+#      context: cart-service
+#      dockerfile: Dockerfile
+#    container_name: cart-service
+#    ports:
+#      - "8090:8090"
+#    restart: always
+#    environment:
+#      SPRING_PROFILES_ACTIVE: dev
+#      CORE_HOST: core-service
+#      CORE_PORT: 8080
+#      EUREKA_HOST: eureka-service
+#      EUREKA_PORT: 8761
+#    networks:
+#      - some-net
+#    depends_on:
+#      - eureka-service
+#      - core-service
+#
+#  api-gateway:
+#    build:
+#      context: api-gateway
+#      dockerfile: Dockerfile
+#    domainname: api-gateway
+#    container_name: api-gateway
+#    ports:
+#      - "5555:5555"
+#    restart: always
+#    networks:
+#      - some-net
+#    depends_on:
+#      - eureka-service
+#
+#  core-service:
+#    build:
+#      context: core-service
+#      dockerfile: Dockerfile
+#    domainname: core-service
+#    container_name: core-service
+#    ports:
+#      - "8080:8080"
+#    restart: always
+#    environment:
+#      SPRING_PROFILES_ACTIVE: dev
+#      POSTGRES_HOST: postgres
+#      POSTGRES_USER: root
+#      POSTGRES_PASSWORD: root
+#      POSTGRES_DB: database
+#      POSTGRES_PORT: 5432
+#      EUREKA_HOST: eureka-service
+#      EUREKA_PORT: 8761
+#      REDIS_HOST: redis
+#      REDIS_PORT: 6379
+#    networks:
+#      - some-net
+#    depends_on:
+#      - eureka-service
+#      - postgres
+#
+#
+#  eureka-service:
+#    build:
+#      context: discovery-service
+#      dockerfile: Dockerfile
+#    container_name: eureka-service
+#    ports:
+#      - "8761:8761"
+#    restart: always
+#    networks:
+#      - some-net
 
 networks:
   some-net:

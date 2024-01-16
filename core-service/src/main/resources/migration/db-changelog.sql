@@ -34,8 +34,21 @@ CREATE TABLE Users
     email         VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255)        NOT NULL,
     full_name     VARCHAR(255),
-    address       TEXT,
-    is_admin      BOOLEAN DEFAULT false
+    address       TEXT
+);
+
+CREATE TABLE Roles
+(
+    role_id   SERIAL PRIMARY KEY,
+    role_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Users_roles
+(
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (role_id) REFERENCES roles (role_id)
 );
 
 CREATE TABLE Orders
@@ -280,3 +293,12 @@ VALUES (14,
 Insert Into users(full_name, email, password_hash)
 VALUES ('Alisa', 'alisa@mail.ru', '$2a$12$OX6l312SSuvcOAILp0Laj.TCjQnfdnX/u8bmzGBJW2/nhvx7UMhn.'),
        ('Sanya', 'sanya@mail.ru', '$2a$12$TZdf8upXkKCo1vsMBq4fLO1u5eR2j8oFGnNJwbLupQ1LLBhBN6PEW');
+
+
+Insert Into roles(role_name)
+VALUES ('ROLE_USER'),
+       ('ROLE_ADMIN');
+
+Insert Into Users_roles(user_id, role_id)
+VALUES (1,1),
+       (2,2);
