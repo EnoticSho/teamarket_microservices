@@ -33,7 +33,11 @@ spring:
           uri: lb://core-service/
           predicates:
             - Path=/core/**
-        - id: cart-service
+        - id: cart-service-specific-path
+          uri: lb://cart-service/
+          predicates:
+            - Path=/cart/v1/api/cart/generate_uuid
+        - id: cart-service-general
           uri: lb://cart-service/
           predicates:
             - Path=/cart/**
@@ -78,6 +82,14 @@ logging:
             route:
               RouteDefinitionLocator: INFO
             '': TRACE
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
 
 jwt:
   secret: 46294A404E635266556A586E327235753778214125442A472D4B615064536756

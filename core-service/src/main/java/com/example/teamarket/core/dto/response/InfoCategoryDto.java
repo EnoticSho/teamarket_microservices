@@ -10,7 +10,6 @@ import java.util.List;
 @Setter
 @Builder
 public class InfoCategoryDto {
-
     private String name;
     private String description;
     private List<String> productList;

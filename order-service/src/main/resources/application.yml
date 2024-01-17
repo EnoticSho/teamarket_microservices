@@ -26,6 +26,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 integrations:
+  user-service:
+    url: http://${USER_HOST:localhost}:${USER_PORT:8980}/auth
+    read-timeout: 10000
+    write-timeout: 5000
+    connect-timeout: 5000
   cart-service:
     url: http://${CART_HOST:localhost}:${CART_PORT:8090}/cart
     read-timeout: 10000
@@ -37,3 +42,11 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost}:${ZIPKIN_PORT:9411}/api/v2/spans

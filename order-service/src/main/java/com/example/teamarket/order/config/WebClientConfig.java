@@ -1,6 +1,7 @@
 package com.example.teamarket.order.config;
 
 import com.example.teamarket.order.properties.CartServiceIntegrationProperties;
+import com.example.teamarket.order.properties.UserServiceIntegrationProperties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -15,23 +16,33 @@ import reactor.netty.tcp.TcpClient;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(CartServiceIntegrationProperties.class)
+@EnableConfigurationProperties({CartServiceIntegrationProperties.class, UserServiceIntegrationProperties.class})
 public class WebClientConfig {
 
-    private final CartServiceIntegrationProperties properties;
+    private final CartServiceIntegrationProperties cartProperties;
+    private final UserServiceIntegrationProperties userProperties;
 
     @Bean
-    public WebClient productServiceWebClient() {
+    public WebClient cartServiceWebClient() {
+        return getWebClient(cartProperties.getConnectTimeout(), cartProperties.getReadTimeout(), cartProperties.getWriteTimeout(), cartProperties.getUrl());
+    }
+
+    @Bean
+    public WebClient userServiceWebClient() {
+        return getWebClient(userProperties.getConnectTimeout(), userProperties.getReadTimeout(), userProperties.getWriteTimeout(), userProperties.getUrl());
+    }
+
+    private WebClient getWebClient(Integer connectTimeout, Integer readTimeout, Integer writeTimeout, String url) {
         TcpClient tcpClient = TcpClient
                 .create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout())
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout)
                 .doOnConnected(connection -> {
-                    connection.addHandlerLast(new ReadTimeoutHandler(properties.getReadTimeout()));
-                    connection.addHandlerLast(new WriteTimeoutHandler(properties.getWriteTimeout()));
+                    connection.addHandlerLast(new ReadTimeoutHandler(readTimeout));
+                    connection.addHandlerLast(new WriteTimeoutHandler(writeTimeout));
                 });
         return WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(url)
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
                 .build();
     }

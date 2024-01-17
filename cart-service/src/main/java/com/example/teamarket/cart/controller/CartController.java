@@ -25,6 +25,7 @@ public class CartController {
 
     @GetMapping("/generate_uuid")
     @ResponseStatus(HttpStatus.CREATED)
+//    @CircuitBreaker(name = "cart")
     public StringResponse generateUuid() {
         return cartService.generateUuid();
     }

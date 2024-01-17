@@ -36,11 +36,12 @@ public class TokenAuthenticationFilter extends AbstractGatewayFilterFactory<Toke
                 return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token expired"));
             }
             try {
-                Map<String, Object> claims = jwtUtil.getAllClaimsFromToken(token);
-                String email = (String) claims.get("sub");
+                String email = jwtUtil.getAllClaimsFromToken(token).get("sub", String.class);
+                String cartId = jwtUtil.getAllClaimsFromToken(token).get("cartId", String.class);
                 return chain.filter(exchange.mutate().request(exchange.getRequest().mutate()
                         .header("Authorization", "Bearer " + token)
                         .header("email", email)
+                        .header("cart_id", cartId)
                         .build()).build());
             } catch (JwtException e) {
                 return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
