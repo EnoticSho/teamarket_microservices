@@ -15,97 +15,231 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      some-net:
+      - some-net
 
   redis:
-    image: 'bitnami/redis:latest'
+    image: redis:latest
     container_name: redis
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "6379:6379"
     networks:
       - some-net
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://zipkin:9411/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     ports:
       - "9411:9411"
     networks:
       - some-net
-#
-#  cart-service:
-#    build:
-#      context: cart-service
-#      dockerfile: Dockerfile
-#    container_name: cart-service
-#    ports:
-#      - "8090:8090"
-#    restart: always
-#    environment:
-#      SPRING_PROFILES_ACTIVE: dev
-#      CORE_HOST: core-service
-#      CORE_PORT: 8080
-#      EUREKA_HOST: eureka-service
-#      EUREKA_PORT: 8761
-#    networks:
-#      - some-net
-#    depends_on:
-#      - eureka-service
-#      - core-service
-#
-#  api-gateway:
-#    build:
-#      context: api-gateway
-#      dockerfile: Dockerfile
-#    domainname: api-gateway
-#    container_name: api-gateway
-#    ports:
-#      - "5555:5555"
-#    restart: always
-#    networks:
-#      - some-net
-#    depends_on:
-#      - eureka-service
-#
-#  core-service:
-#    build:
-#      context: core-service
-#      dockerfile: Dockerfile
-#    domainname: core-service
-#    container_name: core-service
-#    ports:
-#      - "8080:8080"
-#    restart: always
-#    environment:
-#      SPRING_PROFILES_ACTIVE: dev
-#      POSTGRES_HOST: postgres
-#      POSTGRES_USER: root
-#      POSTGRES_PASSWORD: root
-#      POSTGRES_DB: database
-#      POSTGRES_PORT: 5432
-#      EUREKA_HOST: eureka-service
-#      EUREKA_PORT: 8761
-#      REDIS_HOST: redis
-#      REDIS_PORT: 6379
-#    networks:
-#      - some-net
-#    depends_on:
-#      - eureka-service
-#      - postgres
-#
-#
-#  eureka-service:
-#    build:
-#      context: discovery-service
-#      dockerfile: Dockerfile
-#    container_name: eureka-service
-#    ports:
-#      - "8761:8761"
-#    restart: always
-#    networks:
-#      - some-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    healthcheck:
+      test: [ "CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - some-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  broker:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: broker
+    healthcheck:
+      test: [ "CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server=localhost:9092" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    networks:
+      - some-net
+
+  eureka-service:
+    build:
+      context: discovery-service
+      dockerfile: Dockerfile
+    container_name: eureka-service
+    ports:
+      - "8761:8761"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://eureka-service:8761/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - some-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "5555:5555"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://api-gateway:5555/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - some-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  core-service:
+    build:
+      context: core-service
+      dockerfile: Dockerfile
+    container_name: core-service
+    ports:
+      - "8080:8080"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://core-service:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - some-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  cart-service:
+    build:
+      context: cart-service
+      dockerfile: Dockerfile
+    container_name: cart-service
+    ports:
+      - "8090:8090"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://cart-service:8090/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - some-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  order-service:
+    build:
+      context: order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "8991:8991"
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://order-service:8991/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      some-net:
+
+  notification-service:
+    build:
+      context: notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "9999:9999"
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://notification-service:9999/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      some-net:
+
+  auth-service:
+    build:
+      context: auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "8980:8980"
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://auth-service:8980/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      some-net:
 
 networks:
   some-net:

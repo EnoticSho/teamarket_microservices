@@ -7,6 +7,17 @@ eureka:
 server:
   port: 8761
 
+spring:
+  profiles:
+    active: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
 management:
   tracing:
     sampling:
@@ -14,3 +25,18 @@ management:
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans

@@ -2,19 +2,11 @@ server:
   port: 5555
   servlet:
     context-path: /gateway
-
 spring:
-  profiles:
-    active: dev
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: dev
   application:
     name: api-gateway
+  profiles:
+    active: dev
   cloud:
     gateway:
       globalcors:
@@ -50,27 +42,19 @@ spring:
           filters:
             - TokenAuthenticationFilter
         - id: discovery-server
-          uri: http://localhost:8761
+          uri: http://eureka-service:8761
           predicates:
             - Path=/eureka/web
           filters:
             - SetPath=/
         - id: discovery-server-static
-          uri: http://localhost:8761
+          uri: http://eureka-service:8761
           predicates:
             - Path=/eureka/**
         - id: auth-service
           uri: lb://auth-service/
           predicates:
             - Path=/auth/**
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
-
 
 logging:
   level:
@@ -83,6 +67,25 @@ logging:
               RouteDefinitionLocator: INFO
             '': TRACE
 
+jwt:
+  secret: 46294A404E635266556A586E327235753778214125442A472D4B615064536756
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+
 management:
   tracing:
     sampling:
@@ -91,5 +94,24 @@ management:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
 
-jwt:
-  secret: 46294A404E635266556A586E327235753778214125442A472D4B615064536756
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans

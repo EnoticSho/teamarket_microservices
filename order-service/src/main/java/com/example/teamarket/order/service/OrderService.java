@@ -4,10 +4,12 @@ import com.example.teamarket.order.dto.response.CartDto;
 import com.example.teamarket.order.dto.response.InfoUserDto;
 import com.example.teamarket.order.entities.Order;
 import com.example.teamarket.order.entities.OrderItem;
+import com.example.teamarket.order.event.OrderPlacedEvent;
 import com.example.teamarket.order.integration.CartServiceIntegration;
 import com.example.teamarket.order.integration.UserServiceIntegration;
 import com.example.teamarket.order.repository.OrderRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CartServiceIntegration cartServiceIntegration;
     private final UserServiceIntegration userServiceIntegration;
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     public Long saveOrder(String cartId, String email) {
         CartDto cartDto = cartServiceIntegration.getCartById(cartId);
@@ -42,6 +45,8 @@ public class OrderService {
                         .build())
                 .toList();
         order.setItemList(orderItems);
-        return orderRepository.save(order).getOrderId();
+        Order save = orderRepository.save(order);
+        kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(save.getOrderId()));
+        return save.getOrderId();
     }
 }
