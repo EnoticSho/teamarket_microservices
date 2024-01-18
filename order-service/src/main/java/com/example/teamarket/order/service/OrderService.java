@@ -29,10 +29,8 @@ public class OrderService {
 
     public Long saveOrder(String cartId, String email) {
         CartDto cartDto = cartServiceIntegration.getCartById(cartId);
-        InfoUserDto userByEmail = userServiceIntegration.getUserByEmail(email);
-        System.out.println(userByEmail);
         Order order = new Order();
-        order.setUserId(userByEmail.getId());
+        order.setUserEmail(email);
         order.setOrderDate(Timestamp.from(Instant.now()));
         order.setStatus("Зарегистрирован");
         order.setTotalPrice(cartDto.getTotalCost());

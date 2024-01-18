@@ -2,10 +2,12 @@ package com.example.teamarket.core.service.impl;
 
 import com.example.teamarket.core.dto.request.ProductDto;
 import com.example.teamarket.core.dto.response.InfoProductDto;
+import com.example.teamarket.core.dto.response.ReviewInfoDto;
 import com.example.teamarket.core.entity.Category;
 import com.example.teamarket.core.entity.Product;
 import com.example.teamarket.core.entity.ProductImageEntity;
 import com.example.teamarket.core.exception.ResourceNotFoundException;
+import com.example.teamarket.core.integrations.ReviewServiceIntegration;
 import com.example.teamarket.core.mapper.ProductMapper;
 import com.example.teamarket.core.repository.CategoryRepository;
 import com.example.teamarket.core.repository.ProductRepository;
@@ -25,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
+    private final ReviewServiceIntegration reviewServiceIntegration;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
@@ -39,9 +42,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public InfoProductDto findById(Long id) {
-        return productRepository.findById(id)
+        List<ReviewInfoDto> productById = reviewServiceIntegration.getProductById(id);
+        InfoProductDto infoProductDto = productRepository.findById(id)
                 .map(productMapper::productToInfoProductDto)
                 .orElseThrow(() -> ResourceNotFoundException.of(id, Product.class));
+        infoProductDto.setReviewInfoDto(productById);
+        return infoProductDto;
     }
 
 

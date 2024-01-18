@@ -20,4 +20,7 @@ public class InfoProductDto {
     private String effect;
     private List<String> imagesLinks;
     private String category;
+
+    @Builder.Default
+    private List<ReviewInfoDto> reviewInfoDto = null;
 }

@@ -41,6 +41,10 @@ spring:
             - Path=/order/**
           filters:
             - TokenAuthenticationFilter
+        - id: review-service
+          uri: lb://review-service/
+          predicates:
+            - Path=/review/**
         - id: discovery-server
           uri: http://eureka-service:8761
           predicates:

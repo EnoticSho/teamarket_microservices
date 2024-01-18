@@ -1,15 +1,13 @@
 server:
-  port: 8080
+  port: 8778
   servlet:
-    context-path: /core
+    context-path: /review
 
 spring:
   application:
-    name: core-service
+    name: review-service
   profiles:
     active: dev
-  liquibase:
-    change-log: migration/db.changelog-master.yml
   jpa:
     show-sql: true
     properties:
@@ -27,13 +25,6 @@ spring:
     password: root
     username: root
     url: jdbc:postgresql://localhost:5432/database
-
-integrations:
-  review-service:
-    url: http://localhost:8778/review/v1/api/
-    read-timeout: 10000
-    write-timeout: 5000
-    connect-timeout: 5000
 
 eureka:
   client:
@@ -72,10 +63,3 @@ management:
   zipkin:
     tracing:
       endpoint: http://zipkin:9411/api/v2/spans
-
-integrations:
-  review-service:
-    url: http://review-service:8778/review/v1/api
-    read-timeout: 10000
-    write-timeout: 5000
-    connect-timeout: 5000

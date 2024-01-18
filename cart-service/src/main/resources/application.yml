@@ -76,6 +76,7 @@ spring:
   redis:
     port: 6379
     host: redis
+
 integrations:
   core-service:
     url: http://core-service:8080/core

@@ -54,11 +54,10 @@ CREATE TABLE Users_roles
 CREATE TABLE Orders
 (
     order_id    SERIAL PRIMARY KEY,
-    user_id     INT,
+    user_email  VARCHAR(255) NOT NULL ,
     order_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status      VARCHAR(255),
-    total_price DECIMAL(10, 2),
-    FOREIGN KEY (user_id) REFERENCES Users (user_id)
+    total_price DECIMAL(10, 2)
 );
 
 
@@ -69,18 +68,15 @@ CREATE TABLE OrderDetails
     product_id      INT,
     quantity        INT,
     price           DECIMAL(10, 2),
-    FOREIGN KEY (order_id) REFERENCES Orders (order_id),
-    FOREIGN KEY (product_id) REFERENCES Products (product_id)
+    FOREIGN KEY (order_id) REFERENCES Orders (order_id)
 );
 
 CREATE TABLE Reviews
 (
     review_id   SERIAL PRIMARY KEY,
-    product_id  INT,
-    user_id     INT,
-    rating      INT,
+    product_id  INT          NOT NULL,
+    Email       VARCHAR(255) NOT NULL,
+    rating      INT          NOT NULL,
     comment     TEXT,
-    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (product_id) REFERENCES Products (product_id),
-    FOREIGN KEY (user_id) REFERENCES Users (user_id)
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
