@@ -1,6 +1,27 @@
 spring:
-  application:
-    name: auth-service
+  profiles:
+    active: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
   cloud:
     config:
       uri: http://localhost:8888
+      name: core-service
+      profile: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  cloud:
+    config:
+      uri: http://config-server:8888
+      name: core-service
+      profile: docker

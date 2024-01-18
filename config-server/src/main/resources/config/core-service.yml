@@ -6,8 +6,6 @@ server:
 spring:
   application:
     name: core-service
-  profiles:
-    active: dev
   liquibase:
     change-log: migration/db.changelog-master.yml
   jpa:

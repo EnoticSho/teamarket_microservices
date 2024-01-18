@@ -4,8 +4,6 @@ server:
     context-path: /cart
 
 spring:
-  profiles:
-    active: dev
   application:
     name: cart-service
 

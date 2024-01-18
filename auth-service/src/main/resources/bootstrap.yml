@@ -1,6 +1,28 @@
 spring:
-  application:
-    name: api-gateway
+  profiles:
+    active: dev
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
   cloud:
     config:
       uri: http://localhost:8888
+      name: auth-service
+      profile: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  cloud:
+    config:
+      uri: http://config-server:8888
+      name: auth-service
+      profile: docker
