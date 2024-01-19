@@ -3,6 +3,7 @@ package com.example.teamarket.core.controller;
 import com.example.teamarket.core.dto.request.ProductDto;
 import com.example.teamarket.core.dto.response.InfoProductDto;
 import com.example.teamarket.core.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,6 +29,7 @@ public class ProductController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получение всех продуктов с фильтрами")
     public List<InfoProductDto> getAllProducts(
             @RequestParam(required = false, name = "min_price") Integer minPrice,
             @RequestParam(required = false, name = "max_price") Integer maxPrice,
@@ -43,18 +45,21 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получение продукта по id и его отзывов")
     public InfoProductDto getProductById(@PathVariable("id") Long id) {
         return productService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Сохранение продукта")
     public Long createProduct(@RequestBody ProductDto productDto) {
         return productService.saveProduct(productDto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Удаление продукта")
     public void deleteProduct(@PathVariable("id") Long id) {
         productService.deleteById(id);
     }

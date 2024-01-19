@@ -8,6 +8,5 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = CartServiceImpl.class)
 public interface CartMapper {
-
     CartDto cartToCartDto(Cart cart);
 }

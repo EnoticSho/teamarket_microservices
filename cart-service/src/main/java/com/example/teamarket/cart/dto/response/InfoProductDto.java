@@ -1,15 +1,11 @@
 package com.example.teamarket.cart.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Getter
-@Setter
-@Builder
+@Data
 public class InfoProductDto {
     private Long productId;
     private String name;

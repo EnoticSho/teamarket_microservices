@@ -4,10 +4,10 @@ import com.example.teamarket.auth.dto.request.SignInRequest;
 import com.example.teamarket.auth.dto.request.SignUpRequest;
 import com.example.teamarket.auth.dto.response.JwtAuthenticationResponse;
 import com.example.teamarket.auth.services.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "Регистрация и выдача токена")
     @PostMapping("/sign-up")
     public JwtAuthenticationResponse signUp(@RequestHeader("cart_id") String cartId,
                                             @RequestBody @Valid SignUpRequest request) {

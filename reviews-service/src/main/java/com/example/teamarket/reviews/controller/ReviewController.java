@@ -2,7 +2,8 @@ package com.example.teamarket.reviews.controller;
 
 import com.example.teamarket.reviews.dto.request.ReviewDto;
 import com.example.teamarket.reviews.dto.response.ReviewInfoDto;
-import com.example.teamarket.reviews.service.ReviewService;
+import com.example.teamarket.reviews.service.impl.ReviewServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,22 +22,25 @@ import java.util.List;
 @RequestMapping("/v1/api/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService;
+    private final ReviewServiceImpl reviewService;
 
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получение всех продуктов по id продукта")
     public List<ReviewInfoDto> findAllReviewByProduct(@PathVariable("productId") Long productId) {
         return reviewService.findAllReviewByProductId(productId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "сохранение отзыва")
     public Long saveReview(@RequestBody ReviewDto reviewDto) {
         return reviewService.saveReview(reviewDto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "сохранение отзыва по id")
     public void deleteReviewById(@PathVariable("id") Long id) {
         reviewService.deleteById(id);
     }

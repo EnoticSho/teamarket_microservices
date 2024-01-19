@@ -1,6 +1,7 @@
 package com.example.teamarket.order.controller;
 
 import com.example.teamarket.order.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,6 +16,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
+    @Operation(summary = "Создание заказа")
     public Long saveOrder(@RequestHeader(name = "cart_id") String cartId,
                           @RequestHeader(name = "email") String email) {
         return orderService.saveOrder(cartId, email);

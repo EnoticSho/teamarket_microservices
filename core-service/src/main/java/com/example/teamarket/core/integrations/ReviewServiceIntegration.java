@@ -1,6 +1,7 @@
 package com.example.teamarket.core.integrations;
 
 import com.example.teamarket.core.dto.response.ReviewInfoDto;
+import com.example.teamarket.core.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;

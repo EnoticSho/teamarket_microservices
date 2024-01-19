@@ -13,20 +13,23 @@ repositories {
 
 ext {
     set('springCloudVersion', "2023.0.0")
+    set('JsonToken', "0.12.3")
+    set('Swagger', "2.2.20")
 }
 
 dependencies {
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation "io.swagger.core.v3:swagger-annotations:${Swagger}"
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation "io.jsonwebtoken:jjwt-api:${JsonToken}"
 
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonToken}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonToken}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.TcpClient;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,17 +21,16 @@ public class WebClientConfig {
 
     @Bean
     public WebClient productServiceWebClient() {
-        TcpClient tcpClient = TcpClient
-                .create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout())
-                .doOnConnected(connection -> {
-                    connection.addHandlerLast(new ReadTimeoutHandler(properties.getReadTimeout()));
-                    connection.addHandlerLast(new WriteTimeoutHandler(properties.getWriteTimeout()));
-                });
         return WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
+                .clientConnector(new ReactorClientHttpConnector(HttpClient
+                        .create()
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout())
+                        .doOnConnected(connection -> {
+                            connection.addHandlerLast(new ReadTimeoutHandler(properties.getReadTimeout()));
+                            connection.addHandlerLast(new WriteTimeoutHandler(properties.getWriteTimeout()));
+                        })))
                 .build();
     }
 }

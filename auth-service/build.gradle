@@ -13,42 +13,51 @@ configurations {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 ext {
     set('springCloudVersion', "2023.0.0")
+    set('JsonToken', "0.12.3")
+    set('SpingDoc', "2.2.0")
+    set('Mapper', "1.5.3.Final")
+    set('Crypt', "0.4")
+}
+
+dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${SpingDoc}"
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation "io.jsonwebtoken:jjwt-api:${JsonToken}"
+    implementation "org.mapstruct:mapstruct:${Mapper}"
+    implementation "org.mindrot:jbcrypt:${Crypt}"
+
+    annotationProcessor "org.mapstruct:mapstruct-processor:${Mapper}"
+    annotationProcessor 'org.projectlombok:lombok'
+
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonToken}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonToken}"
+    runtimeOnly 'org.postgresql:postgresql'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
-    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
-    implementation 'io.jsonwebtoken:jjwt:0.12.3'
-    implementation 'org.mindrot:jbcrypt:0.4'
-    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

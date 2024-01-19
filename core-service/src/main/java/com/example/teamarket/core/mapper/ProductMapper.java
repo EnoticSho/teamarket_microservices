@@ -17,10 +17,12 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = {ProductServiceImpl.class})
 public interface ProductMapper {
 
+    @Mapping(target = "productId", ignore = true)
     @Mapping(source = "imagesLinks", target = "imagesLinks", ignore = true)
     @Mapping(source = "category", target = "category", ignore = true)
     Product toProduct(ProductDto productDto);
 
+    @Mapping(target = "reviewInfoDto", ignore = true)
     @Mapping(source = "imagesLinks", target = "imagesLinks", qualifiedByName = "mapImageLinksToString")
     @Mapping(source = "category", target = "category", qualifiedByName = "mapCategory")
     InfoProductDto productToInfoProductDto(Product product);
