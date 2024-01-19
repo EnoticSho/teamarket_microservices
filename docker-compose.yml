@@ -106,8 +106,8 @@ services:
     networks:
       - some-net
     depends_on:
-      redis:
-        condition: service_healthy
+      broker:
+        condition: service_started
 
   eureka-service:
     build:
@@ -128,8 +128,8 @@ services:
     networks:
       - some-net
     depends_on:
-      redis:
-        condition: service_healthy
+      config-server:
+        condition: service_started
 
   api-gateway:
     build:
@@ -149,8 +149,8 @@ services:
     networks:
       - some-net
     depends_on:
-      redis:
-        condition: service_healthy
+      config-server:
+        condition: service_started
 
   core-service:
     build:
@@ -170,8 +170,8 @@ services:
     networks:
       - some-net
     depends_on:
-      redis:
-        condition: service_healthy
+      config-server:
+        condition: service_started
 
   cart-service:
     build:
@@ -191,8 +191,8 @@ services:
     networks:
       - some-net
     depends_on:
-      redis:
-        condition: service_healthy
+      config-server:
+        condition: service_started
 
   order-service:
     build:
@@ -210,8 +210,8 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      redis:
-        condition: service_healthy
+      config-server:
+        condition: service_started
     networks:
       some-net:
 
@@ -231,8 +231,8 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      redis:
-        condition: service_healthy
+      config-server:
+        condition: service_started
     networks:
       some-net:
 
@@ -252,31 +252,31 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      redis:
-        condition: service_healthy
+      config-server:
+        condition: service_started
     networks:
       some-net:
 
-  review-service:
-    build:
-      context: reviews-service
-      dockerfile: Dockerfile
-    container_name: review-service
-    ports:
-      - "8778:8778"
-    restart: always
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://review-service:8980/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      redis:
-        condition: service_healthy
-    networks:
-      some-net:
+#  review-service:
+#    build:
+#      context: reviews-service
+#      dockerfile: Dockerfile
+#    container_name: review-service
+#    ports:
+#      - "8778:8778"
+#    restart: always
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://review-service:8980/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    depends_on:
+#      config-server:
+#        condition: service_started
+#    networks:
+#      some-net:
 
 networks:
   some-net:
