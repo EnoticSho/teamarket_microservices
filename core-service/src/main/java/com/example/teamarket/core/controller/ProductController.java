@@ -6,6 +6,7 @@ import com.example.teamarket.core.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
-@RequestMapping("/v1/api/products")
 @RequiredArgsConstructor
+@RequestMapping("/v1/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -51,6 +51,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Сохранение продукта")
     public Long createProduct(@RequestBody ProductDto productDto) {

@@ -1,5 +1,6 @@
 package com.example.teamarket.gateway.filter;
 
+import com.example.teamarket.gateway.util.JwtTokenUtil;
 import com.example.teamarket.gateway.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CartFilter extends AbstractGatewayFilterFactory<CartFilter.Config> {
@@ -27,26 +31,23 @@ public class CartFilter extends AbstractGatewayFilterFactory<CartFilter.Config> 
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-            String authorizationHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            String cartIdHeader = request.getHeaders().getFirst("cart_id");
+            Optional<String> token = JwtTokenUtil.extractToken(request);
 
-            if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
-                String token = authorizationHeader.substring(7); // Уберите "Bearer "
+            if (token.isPresent()) {
                 try {
-                    if (jwtUtil.isInvalid(token)) {
+                    if (jwtUtil.isInvalid(token.get())) {
                         return onError(exchange, "Access token expired");
                     }
-                    String cartId = jwtUtil.getAllClaimsFromToken(token).get("cartId", String.class);
+
+                    String cartId = jwtUtil.getAllClaimsFromToken(token.get()).get("cartId", String.class);
                     return chain.filter(exchange.mutate().request(request.mutate()
                             .header("cart_id", cartId)
                             .build()).build());
                 } catch (JwtException e) {
                     return onError(exchange, "Invalid token");
                 }
-            } else if (StringUtils.hasText(cartIdHeader)) {
-                return chain.filter(exchange);
             } else {
-                return onError(exchange, "Missing Authorization or cart_id header");
+                return onError(exchange, "Missing Authorization header");
             }
         };
     }

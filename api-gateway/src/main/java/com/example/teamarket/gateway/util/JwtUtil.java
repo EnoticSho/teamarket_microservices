@@ -1,6 +1,7 @@
 package com.example.teamarket.gateway.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,15 +19,19 @@ public class JwtUtil {
     private String secret;
 
     public Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .verifyWith((SecretKey) getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith((SecretKey) getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (JwtException e) {
+            throw new JwtException("Failed to parse JWT token", e);
+        }
     }
 
     public boolean isInvalid(String token) {
-        return this.isTokenExpired(token);
+        return isTokenExpired(token);
     }
 
     private Key getSigningKey() {

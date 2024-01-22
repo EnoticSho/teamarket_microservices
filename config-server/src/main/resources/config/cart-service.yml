@@ -7,7 +7,6 @@ spring:
   application:
     name: cart-service
 
-
 #management:
 #  health:
 #    circuitbreakers:

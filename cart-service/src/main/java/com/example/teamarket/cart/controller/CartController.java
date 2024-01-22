@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin("*")
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/cart")
 public class CartController {

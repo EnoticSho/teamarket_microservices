@@ -19,6 +19,19 @@ spring:
               - PATCH
             allowedHeaders: "*"
       routes:
+        - id: core-service-admin
+          uri: lb://core-service/
+          predicates:
+            - Path=/core/v1/api/core/products
+            - Method=POST
+          filters:
+            - TokenAuthenticationFilter
+        - id: core-service-swagger
+          uri: lb://core-service/
+          predicates:
+            - Path=/core/swagger-ui/**
+          filters:
+            - TokenAuthenticationFilter
         - id: core-service
           uri: lb://core-service/
           predicates:
@@ -27,12 +40,28 @@ spring:
           uri: lb://cart-service/
           predicates:
             - Path=/cart/v1/api/cart/generate_uuid
+        - id: cart-service-swagger
+          uri: lb://cart-service/
+          predicates:
+            - Path=/cart/swagger-ui/**
+          filters:
+            - TokenAuthenticationFilter
         - id: cart-service-general
           uri: lb://cart-service/
           predicates:
             - Path=/cart/**
           filters:
             - CartFilter
+        - id: auth-service-swagger
+          uri: lb://auth-service/
+          predicates:
+            - Path=/auth/swagger-ui/**
+          filters:
+            - TokenAuthenticationFilter
+        - id: auth-service
+          uri: lb://auth-service/
+          predicates:
+            - Path=/auth/**
         - id: order-service
           uri: lb://order-service/
           predicates:
@@ -53,14 +82,11 @@ spring:
           uri: http://eureka-service:8761
           predicates:
             - Path=/eureka/**
-        - id: auth-service
-          uri: lb://auth-service/
-          predicates:
-            - Path=/auth/**
+
 
 logging:
   level:
-    root: INFO
+    root: TRACE
     org:
       springframework:
         cloud:

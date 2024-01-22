@@ -1,5 +1,6 @@
 package com.example.teamarket.order.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class OrderItem {
     @Column(name = "order_detail_id")
     private Long orderDetailId;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "order_id")
     private Order order;
 

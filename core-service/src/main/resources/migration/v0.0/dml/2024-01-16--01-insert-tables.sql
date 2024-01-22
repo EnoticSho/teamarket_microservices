@@ -206,7 +206,7 @@ VALUES (14,
 --changeset sergey:4
 Insert Into users(full_name, email, password_hash)
 VALUES ('Alisa', 'alisa@mail.ru', '$2a$12$OX6l312SSuvcOAILp0Laj.TCjQnfdnX/u8bmzGBJW2/nhvx7UMhn.'),
-       ('Sanya', 'sanya@mail.ru', '$2a$12$TZdf8upXkKCo1vsMBq4fLO1u5eR2j8oFGnNJwbLupQ1LLBhBN6PEW');
+       ('Sanya', 'enoticsho@gmail.com', '$2a$12$TZdf8upXkKCo1vsMBq4fLO1u5eR2j8oFGnNJwbLupQ1LLBhBN6PEW');
 
 
 Insert Into roles(role_name)

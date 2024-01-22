@@ -1,16 +1,19 @@
 package com.example.teamarket.gateway.filter;
 
+import com.example.teamarket.gateway.util.JwtTokenUtil;
 import com.example.teamarket.gateway.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class TokenAuthenticationFilter extends AbstractGatewayFilterFactory<TokenAuthenticationFilter.Config> {
@@ -27,22 +30,28 @@ public class TokenAuthenticationFilter extends AbstractGatewayFilterFactory<Toke
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid Authorization header"));
+            Optional<String> token = JwtTokenUtil.extractToken(exchange.getRequest());
+
+            if (token.isEmpty() || jwtUtil.isInvalid(token.get())) {
+                return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or missing token"));
             }
-            String token = authorizationHeader.split(" ")[1].trim();
-            if (jwtUtil.isInvalid(token)) {
-                return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token expired"));
-            }
+
             try {
-                String email = jwtUtil.getAllClaimsFromToken(token).get("sub", String.class);
-                String cartId = jwtUtil.getAllClaimsFromToken(token).get("cartId", String.class);
-                return chain.filter(exchange.mutate().request(exchange.getRequest().mutate()
-                        .header("Authorization", "Bearer " + token)
+                Claims claims = jwtUtil.getAllClaimsFromToken(token.get());
+                List<String> roles = claims.get("roles", List.class);
+                String rolesString = String.join(",", roles);
+
+                String email = claims.getSubject();
+                String cartId = claims.get("cartId", String.class);
+
+                ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                        .header("Authorization", "Bearer " + token.get())
                         .header("email", email)
                         .header("cart_id", cartId)
-                        .build()).build());
+                        .header("roles", rolesString)
+                        .build();
+
+                return chain.filter(exchange.mutate().request(mutatedRequest).build());
             } catch (JwtException e) {
                 return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
             }

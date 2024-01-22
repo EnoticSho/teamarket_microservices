@@ -44,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
         order.setItemList(orderItems);
         Order save = orderRepository.save(order);
+        System.out.println(email);
         kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(save.getOrderId(), email));
         return save.getOrderId();
     }
