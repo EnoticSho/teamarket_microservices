@@ -1,6 +1,7 @@
 package com.example.teamarket.order.service.impl;
 
-import com.example.teamarket.order.dto.request.cart.CartDto;
+import com.example.teamarket.order.dto.response.PaymentInfoDto;
+import com.example.teamarket.order.dto.response.cart.CartDto;
 import com.example.teamarket.order.dto.request.payment.CardInfo;
 import com.example.teamarket.order.dto.request.payment.PaymentRequest;
 import com.example.teamarket.order.dto.response.OrderInfoDto;
@@ -14,6 +15,7 @@ import com.example.teamarket.order.repository.OrderRepository;
 import com.example.teamarket.order.service.KafkaService;
 import com.example.teamarket.order.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
                         .productId(cartItemDto.getId())
                         .order(order)
                         .quantity(cartItemDto.getQuantity())
-                        .price(cartItemDto.getSubPrice())
+                        .price(cartItemDto.getCostByHundredGrams())
                         .build())
                 .toList();
         order.setItemList(orderItems);
@@ -56,11 +58,12 @@ public class OrderServiceImpl implements OrderService {
     public void sendPaymentRequest(Long orderId, CardInfo cardInfo) {
         OrderInfoDto orderById = findOrderById(orderId);
         PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setOrderId(orderId);
         paymentRequest.setEmail(orderById.getUserEmail());
         paymentRequest.setTotal(orderById.getTotalPrice());
         paymentRequest.setCardInfo(cardInfo);
 
-        kafkaService.sendPaymentInfo(paymentRequest);
+        kafkaService.sendPaymentRequest(paymentRequest);
     }
 
     @Override
@@ -68,5 +71,14 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(id)
                 .map(orderMapper::entityToInfoDto)
                 .orElseThrow(() -> ResourceNotFoundException.of(id, Order.class));
+    }
+
+    @Override
+    @KafkaListener(topics = "paymentInfoTopic")
+    public void changeOrderStatus(PaymentInfoDto paymentInfoDto) {
+        if (paymentInfoDto.getStatus().equalsIgnoreCase("Completed")) {
+            orderRepository.updateStatus(paymentInfoDto.getOrderId(), String.valueOf(OrderType.PAID));
+            System.out.println(findOrderById(paymentInfoDto.getOrderId()));
+        }
     }
 }

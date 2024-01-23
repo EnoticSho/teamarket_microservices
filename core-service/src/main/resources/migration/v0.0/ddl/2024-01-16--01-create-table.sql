@@ -81,6 +81,7 @@ CREATE TABLE Reviews
 CREATE TABLE Payment
 (
     payment_id SERIAL PRIMARY KEY,
+    order_id   INT            NOT NULL,
     user_email VARCHAR(255)   NOT NULL,
     total_cost DECIMAL(10, 2) NOT NULL,
     status     VARCHAR(255) CHECK (status IN ('PROCESSING', 'COMPLETED', 'FAILED')),

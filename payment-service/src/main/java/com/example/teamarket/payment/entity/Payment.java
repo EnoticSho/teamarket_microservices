@@ -27,6 +27,9 @@ public class Payment {
     @Column(name = "payment_id")
     private Long id;
 
+    @Column(name = "order_id")
+    private Long orderId;
+
     @Column(name = "user_email")
     private String email;
 

@@ -35,7 +35,7 @@ public class CartServiceImpl implements CartService {
             log.error("Cart not found with UUID: {}", cartUuid);
             throw ResourceNotFoundException.of(cartUuid, Cart.class);
         }
-        return cartMapper.cartToCartDto(cart);
+        return cartMapper.modelToDto(cart);
     }
 
     @Override

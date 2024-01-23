@@ -1,6 +1,5 @@
 package com.example.teamarket.payment.dto.response;
 
-import com.example.teamarket.payment.dto.request.CardInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +14,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class PaymentInfoDto {
     private Long id;
+    private Long orderId;
     private String email;
     private BigDecimal total;
     private String status;
