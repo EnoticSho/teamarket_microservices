@@ -1,4 +1,4 @@
-package com.example.teamarket.order.dto.request;
+package com.example.teamarket.order.dto.request.order;
 
 import com.example.teamarket.order.entities.Order;
 import com.example.teamarket.order.entities.OrderItem;
