@@ -1,16 +1,19 @@
 package com.example.teamarket.order.service.impl;
 
-import com.example.teamarket.order.dto.request.CartDto;
+import com.example.teamarket.order.dto.request.cart.CartDto;
+import com.example.teamarket.order.dto.request.payment.CardInfo;
+import com.example.teamarket.order.dto.request.payment.PaymentRequest;
 import com.example.teamarket.order.dto.response.OrderInfoDto;
 import com.example.teamarket.order.entities.Order;
 import com.example.teamarket.order.entities.OrderItem;
 import com.example.teamarket.order.entities.OrderType;
+import com.example.teamarket.order.exception.ResourceNotFoundException;
 import com.example.teamarket.order.integration.CartServiceIntegration;
 import com.example.teamarket.order.mapper.OrderMapper;
 import com.example.teamarket.order.repository.OrderRepository;
+import com.example.teamarket.order.service.KafkaService;
 import com.example.teamarket.order.service.OrderService;
 import lombok.AllArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +28,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final CartServiceIntegration cartServiceIntegration;
+    private final KafkaService kafkaService;
     private final OrderMapper orderMapper;
-    private final KafkaTemplate<String, OrderInfoDto> kafkaTemplate;
 
     public Long saveOrder(String cartId, String email) {
         CartDto cartDto = cartServiceIntegration.getCartById(cartId);
@@ -45,7 +48,25 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
         order.setItemList(orderItems);
         Order save = orderRepository.save(order);
-        kafkaTemplate.send("notificationTopic", orderMapper.entityToInfoDto(save));
+        kafkaService.sendNotification(orderMapper.entityToInfoDto(save));
         return save.getOrderId();
+    }
+
+    @Override
+    public void sendPaymentRequest(Long orderId, CardInfo cardInfo) {
+        OrderInfoDto orderById = findOrderById(orderId);
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setEmail(orderById.getUserEmail());
+        paymentRequest.setTotal(orderById.getTotalPrice());
+        paymentRequest.setCardInfo(cardInfo);
+
+        kafkaService.sendPaymentInfo(paymentRequest);
+    }
+
+    @Override
+    public OrderInfoDto findOrderById(Long id) {
+        return orderRepository.findById(id)
+                .map(orderMapper::entityToInfoDto)
+                .orElseThrow(() -> ResourceNotFoundException.of(id, Order.class));
     }
 }

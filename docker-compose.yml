@@ -278,5 +278,26 @@ services:
 #    networks:
 #      some-net:
 
+#  payment-service:
+#    build:
+#      context: payment-service
+#      dockerfile: Dockerfile
+#    container_name: payment-service
+#    ports:
+#      - "7777:7777"
+#    restart: always
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://payment-service:8980/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    depends_on:
+#      config-server:
+#        condition: service_started
+#    networks:
+#      some-net:
+
 networks:
   some-net:

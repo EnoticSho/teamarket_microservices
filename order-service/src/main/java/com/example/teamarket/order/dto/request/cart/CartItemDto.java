@@ -1,4 +1,4 @@
-package com.example.teamarket.order.dto.request;
+package com.example.teamarket.order.dto.request.cart;
 
 import lombok.Getter;
 import lombok.Setter;

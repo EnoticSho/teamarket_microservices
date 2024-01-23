@@ -77,3 +77,12 @@ CREATE TABLE Reviews
     comment     TEXT,
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE Payment
+(
+    payment_id SERIAL PRIMARY KEY,
+    user_email VARCHAR(255)   NOT NULL,
+    total_cost DECIMAL(10, 2) NOT NULL,
+    status     VARCHAR(255) CHECK (status IN ('PROCESSING', 'COMPLETED', 'FAILED')),
+    created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

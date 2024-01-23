@@ -32,7 +32,18 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.example.teamarket.order.dto.response.OrderInfoDto
+              mapping:
+                event:com.example.teamarket.order.dto.response.OrderInfoDto,
+                paymentRequestTopic:com.example.teamarket.order.dto.request.payment.PaymentRequest
+    consumer:
+      group-id: orderId
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: paymentInfoTopic:com.example.teamarket.order.dto.response.PaymentInfoDto
 
 integrations:
   user-service:
@@ -83,7 +94,18 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.example.teamarket.order.dto.response.OrderInfoDto
+              mapping:
+                event:com.example.teamarket.order.dto.response.OrderInfoDto,
+                paymentRequestTopic:com.example.teamarket.order.dto.request.payment.PaymentRequest
+    consumer:
+      group-id: orderId
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: paymentInfoTopic:com.example.teamarket.order.dto.response.PaymentInfoDto
 
 
 integrations:

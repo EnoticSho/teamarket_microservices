@@ -1,6 +1,5 @@
-package com.example.teamarket.order.dto.request;
+package com.example.teamarket.order.dto.request.order;
 
-import com.example.teamarket.order.entities.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
