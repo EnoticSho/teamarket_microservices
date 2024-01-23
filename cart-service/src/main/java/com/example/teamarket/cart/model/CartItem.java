@@ -17,12 +17,12 @@ public class CartItem implements Serializable {
     private Long id;
     private String title;
     private Integer quantity;
-    private BigDecimal pricePer;
-    private BigDecimal subPrice;
+    private BigDecimal costByHundredGrams;
+    private BigDecimal amount;
 
     public void changeQuantity(int weight) {
         quantity = quantity + weight;
-        subPrice = pricePer.multiply(BigDecimal.valueOf(quantity)
+        amount = costByHundredGrams.multiply(BigDecimal.valueOf(quantity)
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
     }
 }

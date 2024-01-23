@@ -28,8 +28,8 @@ public class Cart implements Serializable {
             cartItem.setId(infoProductDto.getProductId());
             cartItem.setTitle(infoProductDto.getName());
             cartItem.setQuantity(weight);
-            cartItem.setPricePer(infoProductDto.getPrice());
-            cartItem.setSubPrice(infoProductDto.getPrice()
+            cartItem.setCostByHundredGrams(infoProductDto.getPrice());
+            cartItem.setAmount(infoProductDto.getPrice()
                     .multiply(BigDecimal.valueOf(weight).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
             itemsMap.put(infoProductDto.getProductId(), cartItem);
         }
@@ -60,7 +60,7 @@ public class Cart implements Serializable {
 
     private void recalculate() {
         totalCost = itemsMap.values().stream()
-                .map(CartItem::getSubPrice)
+                .map(CartItem::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

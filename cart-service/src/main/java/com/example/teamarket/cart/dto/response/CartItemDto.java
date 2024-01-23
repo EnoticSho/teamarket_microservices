@@ -15,6 +15,6 @@ public class CartItemDto {
     private Long id;
     private String title;
     private Integer quantity;
-    private BigDecimal pricePer;
-    private BigDecimal subPrice;
+    private BigDecimal costByHundredGrams;
+    private BigDecimal amount;
 }

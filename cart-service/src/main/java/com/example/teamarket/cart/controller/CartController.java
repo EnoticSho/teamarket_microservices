@@ -6,15 +6,7 @@ import com.example.teamarket.cart.service.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,16 +37,16 @@ public class CartController {
     }
 
     @DeleteMapping("/remove/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Удаление продукта корзины по id")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Удаление продукта из корзины по id")
     public void deleteCartItem(@RequestHeader(name = "cart_id") String cartId,
                                @PathVariable("id") Long id) {
         cartService.removeItemFromCart(id, cartId);
     }
 
-    @GetMapping("/add/{id}")
+    @PostMapping("/add/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Добавление продукта корзины по id")
+    @Operation(summary = "Добавление продукта в корзину по id")
     public void addItemToCart(@RequestHeader(name = "cart_id") String cartId,
                               @RequestParam(name = "weight") Integer weight,
                               @PathVariable("id") Long id) {
