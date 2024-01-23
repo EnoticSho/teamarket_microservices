@@ -6,10 +6,10 @@ import com.example.teamarket.reviews.entities.Review;
 import com.example.teamarket.reviews.service.impl.ReviewServiceImpl;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = ReviewServiceImpl.class)
+@Mapper(componentModel = "spring", uses = {ReviewServiceImpl.class})
 public interface ReviewMapper {
 
-    Review dtoToEntity(ReviewDto reviewDto);
-
     ReviewInfoDto entityToInfoDto(Review review);
+
+    Review dtoToEntity(ReviewDto reviewDto);
 }

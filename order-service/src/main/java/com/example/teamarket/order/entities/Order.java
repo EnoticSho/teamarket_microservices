@@ -3,6 +3,8 @@ package com.example.teamarket.order.entities;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,8 +40,9 @@ public class Order {
     @Column(name = "order_date", nullable = false)
     private Timestamp orderDate;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private OrderType status;
 
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
