@@ -7,8 +7,7 @@ spring:
     protocol: smtps
     host: smtp.mail.ru
     port: 465
-    username: paradise666hell@mail.ru
-    password: 5dmws9JYLMC9JEciPcta
+
 
 server:
   port:

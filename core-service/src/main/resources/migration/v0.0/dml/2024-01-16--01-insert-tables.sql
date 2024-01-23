@@ -212,3 +212,15 @@ VALUES ('ROLE_USER'),
 Insert Into users(full_name, email, password_hash, role_id)
 VALUES ('Alisa', 'alisa@mail.ru', '$2a$12$OX6l312SSuvcOAILp0Laj.TCjQnfdnX/u8bmzGBJW2/nhvx7UMhn.', 1),
        ('Sanya', 'enoticsho@gmail.com', '$2a$12$TZdf8upXkKCo1vsMBq4fLO1u5eR2j8oFGnNJwbLupQ1LLBhBN6PEW', 2);
+
+
+--changeset sergey:5
+
+INSERT INTO Reviews (product_id, Email, rating, comment)
+VALUES (1, 'user1@example.com', 5, 'Отличный чай, очень ароматный!'),
+       (1, 'user2@example.com', 4, 'Хороший вкус, но немного сильный для меня.'),
+       (1, 'user3@example.com', 5, 'Лучший чай, который я когда-либо пробовал!'),
+
+       (2, 'user4@example.com', 3, 'Неплохо, но есть лучше.'),
+       (2, 'user5@example.com', 4, 'Довольно хороший чай, мне понравился.'),
+       (2, 'user6@example.com', 2, 'Не мой вкус, кажется слишком горьким.');
