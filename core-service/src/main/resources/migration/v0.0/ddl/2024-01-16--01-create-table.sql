@@ -53,7 +53,7 @@ CREATE TABLE Orders
     order_id    SERIAL PRIMARY KEY,
     user_email  VARCHAR(255) NOT NULL,
     order_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status      VARCHAR(255) CHECK (status IN ('ЗАРЕГИСТРИРОВАН', 'ОПЛАЧЕН')),
+    status      VARCHAR(255) CHECK (status IN ('REGISTERED', 'PAID')),
     total_price DECIMAL(10, 2)
 );
 
