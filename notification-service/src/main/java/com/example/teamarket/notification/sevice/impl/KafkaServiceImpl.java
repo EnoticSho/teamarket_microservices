@@ -1,6 +1,6 @@
 package com.example.teamarket.notification.sevice.impl;
 
-import com.example.teamarket.notification.event.OrderPlacedEvent;
+import com.example.teamarket.notification.event.OrderInfoDto;
 import com.example.teamarket.notification.sevice.KafkaService;
 import com.example.teamarket.notification.sevice.MailService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     @KafkaListener(topics = "notificationTopic")
-    public void handleNotification(OrderPlacedEvent orderPlacedEvent) {
-        mailService.sendEmail(orderPlacedEvent.getEmail(), orderPlacedEvent.getOrderNumber().toString(), orderPlacedEvent.getOrderNumber().toString());
+    public void handleNotification(OrderInfoDto orderInfoDto) {
+        mailService.sendEmail(orderInfoDto.getUserEmail(), orderInfoDto.getStatus(), orderInfoDto.toString());
     }
 }

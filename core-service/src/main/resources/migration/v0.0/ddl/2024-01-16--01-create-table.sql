@@ -17,15 +17,25 @@ CREATE TABLE Products
     category_id    INT,
     stock_quantity INT,
     effect         TEXT,
+    created        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES Categories (category_id)
 );
+
 
 CREATE TABLE ProductImages
 (
     image_id   SERIAL PRIMARY KEY,
     product_id INT,
     image_url  VARCHAR(255),
-    FOREIGN KEY (product_id) REFERENCES Products (product_id)
+    FOREIGN KEY (product_id) REFERENCES Products (product_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Roles
+(
+    role_id   SERIAL PRIMARY KEY,
+    role_name VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE Users
@@ -34,29 +44,16 @@ CREATE TABLE Users
     email         VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255)        NOT NULL,
     full_name     VARCHAR(255),
-    address       TEXT
-);
-
-CREATE TABLE Roles
-(
-    role_id   SERIAL PRIMARY KEY,
-    role_name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE Users_roles
-(
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (role_id) REFERENCES roles (role_id)
+    address       TEXT,
+    role_id       INT REFERENCES Roles (role_id)
 );
 
 CREATE TABLE Orders
 (
     order_id    SERIAL PRIMARY KEY,
-    user_email  VARCHAR(255) NOT NULL ,
+    user_email  VARCHAR(255) NOT NULL,
     order_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status      VARCHAR(255),
+    status      VARCHAR(255) CHECK (status IN ('ЗАРЕГИСТРИРОВАН', 'ОПЛАЧЕН')),
     total_price DECIMAL(10, 2)
 );
 
@@ -68,15 +65,15 @@ CREATE TABLE OrderDetails
     product_id      INT,
     quantity        INT,
     price           DECIMAL(10, 2),
-    FOREIGN KEY (order_id) REFERENCES Orders (order_id)
+    FOREIGN KEY (order_id) REFERENCES Orders (order_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Reviews
 (
     review_id   SERIAL PRIMARY KEY,
-    product_id  INT          NOT NULL,
-    Email       VARCHAR(255) NOT NULL,
-    rating      INT          NOT NULL,
+    product_id  INT                                     NOT NULL,
+    Email       VARCHAR(255)                            NOT NULL,
+    rating      INT CHECK (rating >= 0 AND rating <= 5) NOT NULL,
     comment     TEXT,
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

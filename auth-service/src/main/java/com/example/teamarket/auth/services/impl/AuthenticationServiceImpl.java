@@ -3,11 +3,11 @@ package com.example.teamarket.auth.services.impl;
 import com.example.teamarket.auth.dto.request.SignInRequest;
 import com.example.teamarket.auth.dto.request.SignUpRequest;
 import com.example.teamarket.auth.dto.response.JwtAuthenticationResponse;
+import com.example.teamarket.auth.entities.Role;
 import com.example.teamarket.auth.entities.User;
 import com.example.teamarket.auth.mapper.UserMapper;
 import com.example.teamarket.auth.services.AuthenticationService;
 import com.example.teamarket.auth.services.JwtService;
-import com.example.teamarket.auth.services.RoleService;
 import com.example.teamarket.auth.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,15 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserService userService;
     private final JwtService jwtService;
-    private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -35,7 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userMapper.toUser(request);
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(encodedPassword);
-        user.setRoles(List.of(roleService.getRoleByName("ROLE_USER")));
+        user.setRole(Role.ROLE_USER);
 
         userService.save(user);
 
@@ -46,15 +43,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public JwtAuthenticationResponse signIn(SignInRequest request, String cartId) {
+        System.out.println(123);
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
         ));
-
+        System.out.println(1);
         UserDetails userDetails = userService
                 .userDetailsService()
                 .loadUserByUsername(request.getEmail());
-
+        System.out.println(2);
         String AccessJwt = jwtService.generateToken(userDetails, cartId);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
 

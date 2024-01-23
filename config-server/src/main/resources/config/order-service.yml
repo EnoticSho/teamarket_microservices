@@ -32,7 +32,7 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.example.teamarket.order.event.OrderPlacedEvent
+              mapping: event:com.example.teamarket.order.dto.response.OrderInfoDto
 
 integrations:
   user-service:
@@ -83,7 +83,7 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.example.teamarket.order.event.OrderPlacedEvent
+              mapping: event:com.example.teamarket.order.dto.response.OrderInfoDto
 
 
 integrations:

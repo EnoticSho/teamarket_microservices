@@ -31,7 +31,7 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.example.teamarket.notification.event.OrderPlacedEvent
+              mapping: event:com.example.teamarket.notification.event.OrderInfoDto
 
 eureka:
   client:
@@ -64,7 +64,7 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.example.teamarket.notification.event.OrderPlacedEvent
+              mapping: event:com.example.teamarket.notification.event.OrderInfoDto
 
 eureka:
   client:

@@ -1,11 +1,11 @@
 package com.example.teamarket.order.service.impl;
 
 import com.example.teamarket.order.dto.request.CartDto;
+import com.example.teamarket.order.dto.response.OrderInfoDto;
 import com.example.teamarket.order.entities.Order;
 import com.example.teamarket.order.entities.OrderItem;
-import com.example.teamarket.order.event.OrderPlacedEvent;
 import com.example.teamarket.order.integration.CartServiceIntegration;
-import com.example.teamarket.order.integration.UserServiceIntegration;
+import com.example.teamarket.order.mapper.OrderMapper;
 import com.example.teamarket.order.repository.OrderRepository;
 import com.example.teamarket.order.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -24,8 +24,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final CartServiceIntegration cartServiceIntegration;
-    private final UserServiceIntegration userServiceIntegration;
-    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
+    private final OrderMapper orderMapper;
+    private final KafkaTemplate<String, OrderInfoDto> kafkaTemplate;
 
     public Long saveOrder(String cartId, String email) {
         CartDto cartDto = cartServiceIntegration.getCartById(cartId);
@@ -44,8 +44,7 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
         order.setItemList(orderItems);
         Order save = orderRepository.save(order);
-        System.out.println(email);
-        kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(save.getOrderId(), email));
+        kafkaTemplate.send("notificationTopic", orderMapper.entityToInfoDto(save));
         return save.getOrderId();
     }
 }

@@ -1,31 +1,25 @@
 package com.example.teamarket.auth.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "roles")
-public class Role {
+public enum Role {
+    ROLE_ADMIN(2),
+    ROLE_USER(1);
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long id;
+    private final int id;
 
-    @Column(name = "role_name")
-    private String name;
+    Role(int id) {
+        this.id = id;
+    }
+
+    public static Role valueOf(int id) {
+        for (Role role : values()) {
+            if (role.getId() == id) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("No role found for id: " + id);
+    }
 }

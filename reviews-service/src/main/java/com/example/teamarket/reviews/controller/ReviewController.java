@@ -26,7 +26,7 @@ public class ReviewController {
 
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получение всех продуктов по id продукта")
+    @Operation(summary = "Получение всех отзывов по id продукта")
     public List<ReviewInfoDto> findAllReviewByProduct(@PathVariable("productId") Long productId) {
         return reviewService.findAllReviewByProductId(productId);
     }
@@ -40,7 +40,7 @@ public class ReviewController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "сохранение отзыва по id")
+    @Operation(summary = "удаление отзыва по id")
     public void deleteReviewById(@PathVariable("id") Long id) {
         reviewService.deleteById(id);
     }

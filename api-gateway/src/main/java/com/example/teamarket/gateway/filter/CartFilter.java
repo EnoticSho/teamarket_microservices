@@ -5,7 +5,6 @@ import com.example.teamarket.gateway.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -14,7 +13,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -46,7 +44,11 @@ public class CartFilter extends AbstractGatewayFilterFactory<CartFilter.Config> 
                 } catch (JwtException e) {
                     return onError(exchange, "Invalid token");
                 }
-            } else {
+            }
+            else if (StringUtils.hasText(request.getHeaders().getFirst("cart_id"))) {
+                return chain.filter(exchange);
+            }
+            else {
                 return onError(exchange, "Missing Authorization header");
             }
         };

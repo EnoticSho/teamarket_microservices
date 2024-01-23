@@ -1,7 +1,7 @@
 package com.example.teamarket.notification.sevice;
 
-import com.example.teamarket.notification.event.OrderPlacedEvent;
+import com.example.teamarket.notification.event.OrderInfoDto;
 
 public interface KafkaService {
-    void handleNotification(OrderPlacedEvent orderPlacedEvent);
+    void handleNotification(OrderInfoDto orderInfoDto);
 }

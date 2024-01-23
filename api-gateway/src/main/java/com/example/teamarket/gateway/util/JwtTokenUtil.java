@@ -12,6 +12,7 @@ public class JwtTokenUtil {
 
     public static Optional<String> extractToken(ServerHttpRequest request) {
         String authorizationHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
         if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
             return Optional.of(authorizationHeader.substring(7));
         }

@@ -65,16 +65,16 @@ public class JwtServiceImpl implements JwtService {
         return getAllClaimsFromToken(token).getSubject();
     }
 
+    public boolean isInvalid(String token) {
+        return this.isTokenExpired(token);
+    }
+
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .verifyWith((SecretKey) getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-    }
-
-    public boolean isInvalid(String token) {
-        return this.isTokenExpired(token);
     }
 
     private Key getSigningKey() {
