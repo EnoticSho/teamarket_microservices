@@ -17,6 +17,12 @@ jwt:
   expiration: 600000
   refreshExpiration: 3600000
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
 ---
 spring:
   config:

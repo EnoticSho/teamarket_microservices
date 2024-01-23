@@ -1,0 +1,59 @@
+global:
+  scrape_interval:     10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'core_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:8080/core']
+        labels:
+          application: 'Product Service Application'
+  - job_name: 'auth_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:8980/auth']
+        labels:
+          application: 'Auth Service Application'
+  - job_name: 'cart_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:8090/cart']
+        labels:
+          application: 'Cart Service Application'
+  - job_name: 'config_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:8888']
+        labels:
+          application: 'Config Service Application'
+  - job_name: 'discovery_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'localhost:8761/eureka' ]
+        labels:
+          application: 'Discovery Service Application'
+  - job_name: 'notification_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'localhost:9999/notification' ]
+        labels:
+          application: 'Notification Service Application'
+  - job_name: 'order_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'localhost:8991/order' ]
+        labels:
+          application: 'Order Service Application'
+  - job_name: 'payment_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'localhost:7777/payment' ]
+        labels:
+          application: 'Payment Service Application'
+  - job_name: 'reviews_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'localhost:8778/review' ]
+        labels:
+          application: 'Reviews Service Application'

@@ -44,6 +44,7 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:${Mapper}"
     annotationProcessor 'org.projectlombok:lombok'
 
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonToken}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonToken}"
     runtimeOnly 'org.postgresql:postgresql'

@@ -92,7 +92,9 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     networks:
       - some-net
+
 #
+
 #  config-server:
 #    build:
 #      context: config-server
@@ -298,6 +300,29 @@ services:
 #        condition: service_started
 #    networks:
 #      some-net:
+#
+#  prometheus:
+#    image: prom/prometheus:latest
+#    container_name: prometheus
+#    restart: always
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#
+#  grafana:
+#    image: grafana/grafana-oss:latest
+#    container_name: grafana
+#    restart: always
+#    ports:
+#      - "3000:3000"
+#    links:
+#      - prometheus:prometheus
+#    volumes:
+#      - ./grafana:/var/lib/grafana
+#    environment:
+#      - GF_SECURITY_ADMIN_USER=admin
+#      - GF_SECURITY_ADMIN_PASSWORD=admin
 
 networks:
   some-net:

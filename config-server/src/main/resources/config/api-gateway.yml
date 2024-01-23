@@ -85,7 +85,6 @@ spring:
           filters:
             - SetPath=/
 
-
 logging:
   level:
     root: INFO
@@ -99,6 +98,12 @@ logging:
 
 jwt:
   secret: 46294A404E635266556A586E327235753778214125442A472D4B615064536756
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 
 ---
 

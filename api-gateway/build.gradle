@@ -28,8 +28,9 @@ dependencies {
     implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
     implementation "io.jsonwebtoken:jjwt-api:${JsonToken}"
 
-    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonToken}"
+//    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonToken}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonToken}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

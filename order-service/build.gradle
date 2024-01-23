@@ -43,6 +43,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation "org.mapstruct:mapstruct:${Mapper}"
 
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly 'org.postgresql:postgresql'
 
     compileOnly 'org.projectlombok:lombok'

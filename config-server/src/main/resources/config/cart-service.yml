@@ -33,6 +33,11 @@ spring:
 #        permittedNumberOfCallsInHalfOpenState: 3
 #        automaticTransitionFromOpenToHalfOpenEnabled: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 
 ---
 
