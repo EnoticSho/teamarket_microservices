@@ -15,16 +15,30 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
+/**
+ * This class represents a filter for managing shopping cart-related requests.
+ */
 @Component
 public class CartFilter extends AbstractGatewayFilterFactory<CartFilter.Config> {
 
     private final JwtUtil jwtUtil;
 
+    /**
+     * Constructor for the CartFilter class.
+     *
+     * @param jwtUtil An instance of JwtUtil used for JWT operations.
+     */
     public CartFilter(JwtUtil jwtUtil) {
         super(Config.class);
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Applies the CartFilter to the given ServerWebExchange.
+     *
+     * @param config The configuration for the CartFilter.
+     * @return A GatewayFilter that applies cart-related logic to the request.
+     */
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
@@ -54,9 +68,19 @@ public class CartFilter extends AbstractGatewayFilterFactory<CartFilter.Config> 
         };
     }
 
+    /**
+     * Configuration class for the CartFilter.
+     */
     public static class Config {
     }
 
+    /**
+     * Handles errors in the filter and sets an unauthorized response status.
+     *
+     * @param exchange The ServerWebExchange instance.
+     * @param err      The error message to be returned.
+     * @return A Mono<Void> representing the error response.
+     */
     private Mono<Void> onError(ServerWebExchange exchange, String err) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.UNAUTHORIZED);

@@ -17,8 +17,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A filter that extracts user information from request headers and sets it in the security context.
+ */
 @Component
 public class HeadersFilter extends OncePerRequestFilter {
+
+    /**
+     * Filters incoming requests, extracts user information from headers, and sets it in the security context.
+     *
+     * @param request     The HTTP servlet request.
+     * @param response    The HTTP servlet response.
+     * @param filterChain The filter chain.
+     * @throws ServletException If a servlet-related error occurs.
+     * @throws IOException      If an I/O error occurs.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

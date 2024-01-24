@@ -14,11 +14,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+/**
+ * Configuration class for security settings.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    /**
+     * Configures the security filter chain for HTTP requests.
+     *
+     * @param http The HttpSecurity object to configure.
+     * @return The configured {@link SecurityFilterChain}.
+     * @throws Exception If an exception occurs while configuring the security filter chain.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -32,8 +42,15 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Retrieves the authentication manager bean for use in the application.
+     *
+     * @param configuration The AuthenticationConfiguration object for configuring authentication.
+     * @return The configured {@link AuthenticationManager}.
+     * @throws Exception If an exception occurs while retrieving the authentication manager.
+     */
     @Bean
-    public AuthenticationManager authenticationManagerBean (AuthenticationConfiguration configuration) throws
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration configuration) throws
             Exception {
         return configuration.getAuthenticationManager();
     }

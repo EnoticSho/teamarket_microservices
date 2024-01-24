@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Implementation of the ProductService interface that provides product-related functionality.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -32,6 +35,16 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
+    /**
+     * Retrieves a list of products with optional filters.
+     *
+     * @param maxPrice The maximum price filter for products.
+     * @param minPrice The minimum price filter for products.
+     * @param title    The title filter for products.
+     * @param page     The page number for pagination.
+     * @param count    The number of products to retrieve per page.
+     * @return A list of InfoProductDto objects representing the filtered products.
+     */
     @Override
     public List<InfoProductDto> findAllProducts(Integer maxPrice, Integer minPrice, String title, int page, int count) {
         Specification<Product> specByFilter = createSpecByFilter(maxPrice, minPrice, title);
@@ -40,9 +53,16 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
+    /**
+     * Retrieves a product by its ID, including its reviews.
+     *
+     * @param id The ID of the product to retrieve.
+     * @return An InfoProductDto object representing the product with reviews.
+     * @throws ResourceNotFoundException if the product with the given ID is not found.
+     */
     @Override
     public InfoProductDto findById(Long id) {
-        List<ReviewInfoDto> productById = reviewServiceIntegration.getProductById(id);
+        List<ReviewInfoDto> productById = reviewServiceIntegration.getProductReviewsById(id);
         InfoProductDto infoProductDto = productRepository.findById(id)
                 .map(productMapper::productToInfoProductDto)
                 .orElseThrow(() -> ResourceNotFoundException.of(id, Product.class));
@@ -50,7 +70,12 @@ public class ProductServiceImpl implements ProductService {
         return infoProductDto;
     }
 
-
+    /**
+     * Saves a new product.
+     *
+     * @param productDto The ProductDto object representing the new product.
+     * @return The ID of the newly created product.
+     */
     public Long saveProduct(@Valid ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
 
@@ -69,10 +94,22 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product).getProductId();
     }
 
+    /**
+     * Updates an existing product.
+     *
+     * @param id         The ID of the product to update.
+     * @param productDto The ProductDto object representing the updated product.
+     * @return The ID of the updated product.
+     */
     public Long updateProduct(Long id, ProductDto productDto) {
         return null;
     }
 
+    /**
+     * Deletes a product by its ID.
+     *
+     * @param productId The ID of the product to delete.
+     */
     public void deleteById(Long productId) {
         productRepository.deleteById(productId);
     }

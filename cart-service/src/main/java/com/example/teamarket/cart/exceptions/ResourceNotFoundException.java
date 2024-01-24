@@ -1,4 +1,4 @@
-package com.example.teamarket.auth.exceptions;
+package com.example.teamarket.cart.exceptions;
 
 /**
  * Exception indicating that a requested resource was not found.

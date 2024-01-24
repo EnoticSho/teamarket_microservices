@@ -13,10 +13,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+/**
+ * Configuration class for setting up security and authentication in the cart service.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Configures the security filter chain for the cart service.
+     *
+     * @param http The HttpSecurity object to configure.
+     * @return A SecurityFilterChain configured with security rules and filters.
+     * @throws Exception if there is an error while configuring security.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -30,8 +40,15 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Retrieves the AuthenticationManager bean from the AuthenticationConfiguration.
+     *
+     * @param configuration The AuthenticationConfiguration to retrieve the AuthenticationManager from.
+     * @return An AuthenticationManager for authentication purposes.
+     * @throws Exception if there is an error while retrieving the AuthenticationManager.
+     */
     @Bean
-    public AuthenticationManager authenticationManagerBean (AuthenticationConfiguration configuration) throws
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration configuration) throws
             Exception {
         return configuration.getAuthenticationManager();
     }

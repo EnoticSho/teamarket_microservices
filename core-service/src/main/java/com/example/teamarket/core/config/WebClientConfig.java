@@ -12,6 +12,9 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
+/**
+ * Configuration class for WebClient settings.
+ */
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(ReviewServiceIntegrationProperties.class)
@@ -19,6 +22,11 @@ public class WebClientConfig {
 
     private final ReviewServiceIntegrationProperties properties;
 
+    /**
+     * Configures a WebClient bean for making HTTP requests.
+     *
+     * @return The configured {@link WebClient} bean.
+     */
     @Bean
     public WebClient productServiceWebClient() {
         return WebClient

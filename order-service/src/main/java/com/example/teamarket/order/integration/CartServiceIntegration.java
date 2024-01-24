@@ -8,15 +8,30 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+/**
+ * Integration service for communicating with the Cart service.
+ */
 @Component
 public class CartServiceIntegration {
 
     private final WebClient cartServiceWebClient;
 
+    /**
+     * Constructs a CartServiceIntegration with the specified WebClient.
+     *
+     * @param cartServiceWebClient The WebClient for communicating with the Cart service.
+     */
     public CartServiceIntegration(@Qualifier("cartServiceWebClient") WebClient cartServiceWebClient) {
         this.cartServiceWebClient = cartServiceWebClient;
     }
 
+    /**
+     * Retrieves the cart information by its ID from the Cart service.
+     *
+     * @param cartId The ID of the cart to retrieve.
+     * @return The CartDto containing cart information.
+     * @throws ResourceNotFoundException If the cart is not found, a ResourceNotFoundException is thrown.
+     */
     public CartDto getCartById(String cartId) {
         return cartServiceWebClient.get()
                 .uri("/v1/api/cart")

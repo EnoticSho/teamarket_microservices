@@ -7,6 +7,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of the MailService interface that provides email sending functionality.
+ */
 @Service
 public class MailServiceImpl implements MailService {
 
@@ -16,6 +19,13 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    /**
+     * Sends an email to the specified recipient with the given subject and content.
+     *
+     * @param email   The recipient's email address.
+     * @param subject The subject of the email.
+     * @param content The content of the email.
+     */
     @Override
     public void sendEmail(String email, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();

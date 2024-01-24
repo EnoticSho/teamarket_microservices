@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the JwtService interface for handling JWT token generation and validation.
+ */
 @Service
 public class JwtServiceImpl implements JwtService {
 
@@ -30,6 +33,13 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.refreshExpiration}")
     private Long refreshExpiration;
 
+    /**
+     * Generates a JWT access token based on user details and cart ID.
+     *
+     * @param userDetails The UserDetails object representing the authenticated user.
+     * @param cartId      The cart identifier.
+     * @return A JWT access token.
+     */
     public String generateToken(UserDetails userDetails, String cartId) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roleList = userDetails.getAuthorities().stream()
@@ -49,6 +59,12 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
+    /**
+     * Generates a JWT refresh token based on user details.
+     *
+     * @param userDetails The UserDetails object representing the authenticated user.
+     * @return A JWT refresh token.
+     */
     public String generateRefreshToken(UserDetails userDetails) {
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + refreshExpiration);
@@ -61,10 +77,22 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
+    /**
+     * Extracts the email address from a JWT token.
+     *
+     * @param token The JWT token.
+     * @return The email address extracted from the token.
+     */
     public String getEmailFromToken(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
 
+    /**
+     * Checks if a JWT token is invalid (e.g., expired).
+     *
+     * @param token The JWT token to validate.
+     * @return true if the token is invalid, false otherwise.
+     */
     public boolean isInvalid(String token) {
         return this.isTokenExpired(token);
     }

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller class for managing product reviews.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/reviews")
@@ -24,23 +27,40 @@ public class ReviewController {
 
     private final ReviewServiceImpl reviewService;
 
+    /**
+     * Retrieves all reviews for a given product by its ID.
+     *
+     * @param productId The ID of the product to fetch reviews for.
+     * @return A list of review information DTOs.
+     */
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получение всех отзывов по id продукта")
+    @Operation(summary = "Retrieve all reviews by product ID")
     public List<ReviewInfoDto> findAllReviewByProduct(@PathVariable("productId") Long productId) {
         return reviewService.findAllReviewByProductId(productId);
     }
 
+    /**
+     * Saves a new review.
+     *
+     * @param reviewDto The review DTO to be saved.
+     * @return The ID of the saved review.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "сохранение отзыва")
+    @Operation(summary = "Save a review")
     public Long saveReview(@RequestBody ReviewDto reviewDto) {
         return reviewService.saveReview(reviewDto);
     }
 
+    /**
+     * Deletes a review by its ID.
+     *
+     * @param id The ID of the review to be deleted.
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "удаление отзыва по id")
+    @Operation(summary = "Delete a review by ID")
     public void deleteReviewById(@PathVariable("id") Long id) {
         reviewService.deleteById(id);
     }

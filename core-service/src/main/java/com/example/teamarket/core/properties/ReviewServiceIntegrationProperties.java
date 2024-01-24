@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Configuration properties for integrating with the Review Service.
+ */
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "integrations.review-service")

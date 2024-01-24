@@ -4,14 +4,13 @@ import com.example.teamarket.core.dto.response.InfoCategoryDto;
 import com.example.teamarket.core.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing product categories.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/category")
@@ -19,15 +18,26 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    /**
+     * Retrieves all product categories.
+     *
+     * @return A list of {@link InfoCategoryDto} representing all categories.
+     */
     @GetMapping
-    @Operation(summary = "Получение всех категорий")
-    public List<InfoCategoryDto> getAllProducts() {
+    @Operation(summary = "Retrieve all categories")
+    public List<InfoCategoryDto> getAllCategories() {
         return categoryService.findAllCategory();
     }
 
+    /**
+     * Retrieves a category by its ID.
+     *
+     * @param id The ID of the category to retrieve.
+     * @return The {@link InfoCategoryDto} representing the category with the specified ID.
+     */
     @GetMapping("/{id}")
-    @Operation(summary = "Получение категории по id")
-    private InfoCategoryDto getProductById(@PathVariable("id") Long id) {
+    @Operation(summary = "Retrieve a category by ID")
+    private InfoCategoryDto getCategoryById(@PathVariable("id") Long id) {
         return categoryService.findById(id);
     }
 }

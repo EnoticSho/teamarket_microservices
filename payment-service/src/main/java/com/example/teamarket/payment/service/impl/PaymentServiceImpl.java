@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Implementation of the PaymentService interface for processing payments and sending payment responses.
+ */
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
@@ -23,6 +26,11 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
+    /**
+     * Processes a payment request.
+     *
+     * @param paymentRequest The payment request to process.
+     */
     @Override
     @SneakyThrows
     @KafkaListener(topics = "paymentRequestTopic")
@@ -39,6 +47,11 @@ public class PaymentServiceImpl implements PaymentService {
         sendResponse(paymentMapper.entityInfoDto(payment));
     }
 
+    /**
+     * Sends a payment response to a Kafka topic.
+     *
+     * @param paymentInfoDto The payment response to send.
+     */
     @Override
     public void sendResponse(PaymentInfoDto paymentInfoDto) {
         kafkaTemplate.send("paymentInfoTopic", paymentInfoDto);

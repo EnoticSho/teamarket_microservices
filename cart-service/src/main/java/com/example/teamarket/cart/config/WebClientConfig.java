@@ -12,6 +12,9 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
+/**
+ * Configuration class for creating and configuring WebClient instances to communicate with external services.
+ */
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(CoreServiceIntegrationProperties.class)
@@ -19,6 +22,11 @@ public class WebClientConfig {
 
     private final CoreServiceIntegrationProperties properties;
 
+    /**
+     * Configures and creates a WebClient for communicating with the product service.
+     *
+     * @return A WebClient instance for the product service with configured properties.
+     */
     @Bean
     public WebClient productServiceWebClient() {
         return WebClient

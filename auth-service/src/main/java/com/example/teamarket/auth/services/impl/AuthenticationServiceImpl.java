@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of the AuthenticationService interface for user authentication and authorization.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -27,6 +30,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
+    /**
+     * Registers a new user and returns JWT tokens for authentication.
+     *
+     * @param request The request object containing user registration data.
+     * @param cartId  The cart identifier.
+     * @return A JwtAuthenticationResponse containing JWT access and refresh tokens.
+     */
     @Transactional
     public JwtAuthenticationResponse signUp(SignUpRequest request, String cartId) {
         User user = userMapper.toUser(request);
@@ -36,29 +46,43 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userService.save(user);
 
-        String AccessJwt = jwtService.generateToken(user, cartId);
+        String accessJwt = jwtService.generateToken(user, cartId);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        return new JwtAuthenticationResponse(AccessJwt, refreshToken);
+        return new JwtAuthenticationResponse(accessJwt, refreshToken);
     }
 
+    /**
+     * Authenticates a user and returns JWT tokens for access.
+     *
+     * @param request The request object containing user login credentials.
+     * @param cartId  The cart identifier.
+     * @return A JwtAuthenticationResponse containing JWT access and refresh tokens.
+     */
     public JwtAuthenticationResponse signIn(SignInRequest request, String cartId) {
-        System.out.println(123);
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
         ));
-        System.out.println(1);
+
         UserDetails userDetails = userService
                 .userDetailsService()
                 .loadUserByUsername(request.getEmail());
-        System.out.println(2);
-        String AccessJwt = jwtService.generateToken(userDetails, cartId);
+
+        String accessJwt = jwtService.generateToken(userDetails, cartId);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
 
-        return new JwtAuthenticationResponse(AccessJwt, refreshToken);
+        return new JwtAuthenticationResponse(accessJwt, refreshToken);
     }
 
+    /**
+     * Refreshes the user's access token using a refresh token.
+     *
+     * @param refreshToken The refresh token.
+     * @param cartId       The cart identifier.
+     * @return A JwtAuthenticationResponse containing a new JWT access token and the same refresh token.
+     * @throws RuntimeException if the refresh token is invalid or the associated email is not found.
+     */
     public JwtAuthenticationResponse refreshAccessToken(String refreshToken, String cartId) {
         String emailFromToken = jwtService.getEmailFromToken(refreshToken);
         if (jwtService.isInvalid(refreshToken) || emailFromToken == null) {

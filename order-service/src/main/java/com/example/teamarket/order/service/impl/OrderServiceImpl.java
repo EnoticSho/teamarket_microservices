@@ -23,6 +23,9 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Implementation of the OrderService interface for managing orders and payments.
+ */
 @Service
 @Transactional
 @AllArgsConstructor
@@ -33,6 +36,13 @@ public class OrderServiceImpl implements OrderService {
     private final KafkaService kafkaService;
     private final OrderMapper orderMapper;
 
+    /**
+     * Saves an order based on the contents of a user's cart.
+     *
+     * @param cartId The cart identifier.
+     * @param email  The user's email address.
+     * @return The identifier of the saved order.
+     */
     public Long saveOrder(String cartId, String email) {
         CartDto cartDto = cartServiceIntegration.getCartById(cartId);
         Order order = new Order();
@@ -54,6 +64,12 @@ public class OrderServiceImpl implements OrderService {
         return save.getOrderId();
     }
 
+    /**
+     * Sends a payment request for the specified order.
+     *
+     * @param orderId   The identifier of the order.
+     * @param cardInfo  The card information for payment.
+     */
     @Override
     public void sendPaymentRequest(Long orderId, CardInfo cardInfo) {
         OrderInfoDto orderById = findOrderById(orderId);
@@ -66,6 +82,12 @@ public class OrderServiceImpl implements OrderService {
         kafkaService.sendPaymentRequest(paymentRequest);
     }
 
+    /**
+     * Retrieves an order by its identifier.
+     *
+     * @param id The identifier of the order.
+     * @return The order information.
+     */
     @Override
     public OrderInfoDto findOrderById(Long id) {
         return orderRepository.findById(id)
@@ -73,6 +95,11 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> ResourceNotFoundException.of(id, Order.class));
     }
 
+    /**
+     * Handles payment status changes received via Kafka messages.
+     *
+     * @param paymentInfoDto The payment information.
+     */
     @Override
     @KafkaListener(topics = "paymentInfoTopic")
     public void changeOrderStatus(PaymentInfoDto paymentInfoDto) {

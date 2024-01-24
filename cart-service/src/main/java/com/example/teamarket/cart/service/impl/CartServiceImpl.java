@@ -3,7 +3,7 @@ package com.example.teamarket.cart.service.impl;
 import com.example.teamarket.cart.dto.response.CartDto;
 import com.example.teamarket.cart.dto.response.InfoProductDto;
 import com.example.teamarket.cart.dto.response.StringResponse;
-import com.example.teamarket.cart.exception.ResourceNotFoundException;
+import com.example.teamarket.cart.exceptions.ResourceNotFoundException;
 import com.example.teamarket.cart.integration.ProductServiceIntegration;
 import com.example.teamarket.cart.mapper.CartMapper;
 import com.example.teamarket.cart.model.Cart;
@@ -27,6 +27,13 @@ public class CartServiceImpl implements CartService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final CartMapper cartMapper;
 
+    /**
+     * Retrieves the current cart associated with the given UUID.
+     *
+     * @param cartUuid The UUID of the cart to retrieve.
+     * @return The {@link CartDto} representing the current cart.
+     * @throws ResourceNotFoundException if the cart is not found.
+     */
     @Override
     public CartDto getCurrentCart(String cartUuid) {
         log.debug("Getting current cart with UUID: {}", cartUuid);
@@ -38,22 +45,45 @@ public class CartServiceImpl implements CartService {
         return cartMapper.modelToDto(cart);
     }
 
+    /**
+     * Adds an item to the cart with the given product ID and weight.
+     *
+     * @param productId The ID of the product to add to the cart.
+     * @param weight    The weight of the product to add to the cart.
+     * @param uuid      The UUID of the cart.
+     */
     @Override
     public void addItemToCart(Long productId, int weight, String uuid) {
         InfoProductDto product = productServiceIntegration.getProductById(productId);
         execute(uuid, cart -> cart.addItem(product, weight));
     }
 
+    /**
+     * Removes an item from the cart with the given ID.
+     *
+     * @param id   The ID of the item to remove from the cart.
+     * @param uuid The UUID of the cart.
+     */
     @Override
     public void removeItemFromCart(Long id, String uuid) {
         execute(uuid, cart -> cart.removeItemById(id));
     }
 
+    /**
+     * Clears the cart associated with the given UUID.
+     *
+     * @param uuid The UUID of the cart to clear.
+     */
     @Override
     public void clear(String uuid) {
         execute(uuid, Cart::removeAllItems);
     }
 
+    /**
+     * Generates a UUID for a new cart and stores it in Redis.
+     *
+     * @return A {@link StringResponse} containing the generated UUID.
+     */
     @Override
     public StringResponse generateUuid() {
         String cartUuid = UUID.randomUUID().toString();
@@ -61,6 +91,13 @@ public class CartServiceImpl implements CartService {
         return new StringResponse(cartUuid);
     }
 
+    /**
+     * Edits the quantity of an item in the cart.
+     *
+     * @param cartId The UUID of the cart.
+     * @param id     The ID of the item to edit.
+     * @param weight The new weight of the item.
+     */
     @Override
     public void editItem(String cartId, Long id, int weight) {
         execute(cartId, cart -> cart.editCartItem(id, weight));

@@ -12,12 +12,22 @@ import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * This utility class provides methods for working with JWT tokens.
+ */
 @Component
 public class JwtUtil {
 
     @Value("${jwt.secret}")
     private String secret;
 
+    /**
+     * Retrieves all claims from a JWT token.
+     *
+     * @param token The JWT token to extract claims from.
+     * @return A Claims object containing the JWT claims.
+     * @throws JwtException If there is an issue parsing the JWT token.
+     */
     public Claims getAllClaimsFromToken(String token) {
         try {
             return Jwts.parser()
@@ -30,6 +40,12 @@ public class JwtUtil {
         }
     }
 
+    /**
+     * Checks if a JWT token is invalid (e.g., expired).
+     *
+     * @param token The JWT token to check for validity.
+     * @return true if the token is invalid, false otherwise.
+     */
     public boolean isInvalid(String token) {
         return isTokenExpired(token);
     }

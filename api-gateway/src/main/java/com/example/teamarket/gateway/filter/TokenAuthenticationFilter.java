@@ -15,18 +15,35 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class represents a filter for token-based authentication in a gateway.
+ */
 @Component
 public class TokenAuthenticationFilter extends AbstractGatewayFilterFactory<TokenAuthenticationFilter.Config> {
     private final JwtUtil jwtUtil;
 
+    /**
+     * Constructor for the TokenAuthenticationFilter class.
+     *
+     * @param jwtUtil An instance of JwtUtil used for JWT operations.
+     */
     public TokenAuthenticationFilter(JwtUtil jwtUtil) {
         super(TokenAuthenticationFilter.Config.class);
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Configuration class for the TokenAuthenticationFilter.
+     */
     public static class Config {
     }
 
+    /**
+     * Applies the TokenAuthenticationFilter to the given ServerWebExchange.
+     *
+     * @param config The configuration for the TokenAuthenticationFilter.
+     * @return A GatewayFilter that performs token-based authentication.
+     */
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {

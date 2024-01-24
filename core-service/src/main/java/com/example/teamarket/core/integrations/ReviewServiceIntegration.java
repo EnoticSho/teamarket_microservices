@@ -11,21 +11,32 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+/**
+ * Integration class to interact with the Review Service.
+ */
 @Component
 @RequiredArgsConstructor
 public class ReviewServiceIntegration {
 
     private final WebClient reviewServiceWebClient;
 
-    public List<ReviewInfoDto> getProductById(Long productId) {
+    /**
+     * Retrieves a list of reviews for a product by its ID.
+     *
+     * @param productId The ID of the product to retrieve reviews for.
+     * @return A list of review information DTOs.
+     * @throws ResourceNotFoundException If the product or reviews are not found.
+     */
+    public List<ReviewInfoDto> getProductReviewsById(Long productId) throws ResourceNotFoundException {
         return reviewServiceWebClient.get()
                 .uri("/reviews/" + productId)
                 .retrieve()
                 .onStatus(
                         httpStatus -> httpStatus.value() == HttpStatus.NOT_FOUND.value(),
-                        clientResponse -> Mono.error(new Exception())
+                        clientResponse -> Mono.error(ResourceNotFoundException.of(productId, ReviewInfoDto.class))
                 )
-                .bodyToMono(new ParameterizedTypeReference<List<ReviewInfoDto>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<ReviewInfoDto>>() {
+                })
                 .block();
     }
 }

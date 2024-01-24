@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * Handles the exception when a resource is not found.
+     *
+     * @param ex The exception indicating the resource not found.
+     * @return ResponseEntity containing the error response.
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse();
@@ -21,21 +27,33 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handles the exception when a database error occurs.
+     *
+     * @param ex The exception indicating a database error.
+     * @return ResponseEntity containing the error response.
+     */
     @ExceptionHandler(DatabaseException.class)
     public ResponseEntity<ApiErrorResponse> handleDatabaseException(DatabaseException ex) {
         ApiErrorResponse response = new ApiErrorResponse();
 
-        response.setErrorMessage("Ошибка базы данных: " + ex.getMessage());
+        response.setErrorMessage("Database Error: " + ex.getMessage());
         response.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Handles the exception when a Hibernate error occurs.
+     *
+     * @param ex The exception indicating a Hibernate error.
+     * @return ResponseEntity containing the error response.
+     */
     @ExceptionHandler(PropertyValueException.class)
     public ResponseEntity<ApiErrorResponse> handleHibernateError(PropertyValueException ex) {
         ApiErrorResponse response = new ApiErrorResponse();
 
-        response.setErrorMessage("Ошибка в Hibernate: " + ex.getMessage());
+        response.setErrorMessage("Hibernate Error: " + ex.getMessage());
         response.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

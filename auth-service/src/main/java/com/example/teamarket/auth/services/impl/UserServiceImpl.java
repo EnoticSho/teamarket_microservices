@@ -19,17 +19,34 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    /**
+     * Finds a user by their email address and returns a DTO containing user information.
+     *
+     * @param email The email address of the user to find.
+     * @return A UserInfoDto containing user information.
+     * @throws ResourceNotFoundException if the user with the given email address is not found.
+     */
     public UserInfoDto findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(userMapper::toUserInfoDto)
                 .orElseThrow(() -> ResourceNotFoundException.of(email, User.class));
     }
 
+    /**
+     * Creates a UserDetailsService that retrieves a user by their email address.
+     *
+     * @return A UserDetailsService for retrieving users by email address.
+     */
     public UserDetailsService userDetailsService() {
         return email -> userRepository.findByEmail(email)
                 .orElseThrow(() -> ResourceNotFoundException.of(email, User.class));
     }
 
+    /**
+     * Saves a user to the repository.
+     *
+     * @param user The user to save.
+     */
     public void save(User user) {
         userRepository.save(user);
     }
