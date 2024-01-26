@@ -1,6 +1,7 @@
 package com.example.teamarket.cart.config;
 
 import com.example.teamarket.cart.properties.CoreServiceIntegrationProperties;
+import com.example.teamarket.cart.properties.InventoryServiceIntegrationProperties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -17,10 +18,22 @@ import reactor.netty.http.client.HttpClient;
  */
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(CoreServiceIntegrationProperties.class)
+@EnableConfigurationProperties({CoreServiceIntegrationProperties.class, InventoryServiceIntegrationProperties.class})
 public class WebClientConfig {
 
-    private final CoreServiceIntegrationProperties properties;
+    private final CoreServiceIntegrationProperties coreServiceIntegrationProperties;
+    private final InventoryServiceIntegrationProperties integrationProperties;
+
+
+    @Bean
+    public WebClient integrationServiceWebClient() {
+        return createWebClient(
+                integrationProperties.getConnectTimeout(),
+                integrationProperties.getReadTimeout(),
+                integrationProperties.getWriteTimeout(),
+                integrationProperties.getUrl()
+        );
+    }
 
     /**
      * Configures and creates a WebClient for communicating with the product service.
@@ -29,15 +42,23 @@ public class WebClientConfig {
      */
     @Bean
     public WebClient productServiceWebClient() {
+        return createWebClient(
+                coreServiceIntegrationProperties.getConnectTimeout(),
+                coreServiceIntegrationProperties.getReadTimeout(),
+                coreServiceIntegrationProperties.getWriteTimeout(),
+                coreServiceIntegrationProperties.getUrl()
+        );
+    }
+
+    private WebClient createWebClient(Integer connectTimeout, Integer readTimeout, Integer writeTimeout, String url) {
         return WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
-                .clientConnector(new ReactorClientHttpConnector(HttpClient
-                        .create()
-                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout())
+                .baseUrl(url)
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout)
                         .doOnConnected(connection -> {
-                            connection.addHandlerLast(new ReadTimeoutHandler(properties.getReadTimeout()));
-                            connection.addHandlerLast(new WriteTimeoutHandler(properties.getWriteTimeout()));
+                            connection.addHandlerLast(new ReadTimeoutHandler(readTimeout));
+                            connection.addHandlerLast(new WriteTimeoutHandler(writeTimeout));
                         })))
                 .build();
     }

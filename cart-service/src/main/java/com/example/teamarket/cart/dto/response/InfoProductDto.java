@@ -1,8 +1,10 @@
 package com.example.teamarket.cart.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -12,7 +14,4 @@ public class InfoProductDto {
     private String description;
     private BigDecimal price;
     private Integer stockQuantity;
-    private String effect;
-    private List<String> imagesLinks;
-    private String category;
 }

@@ -7,33 +7,6 @@ spring:
   application:
     name: cart-service
 
-#management:
-#  health:
-#    circuitbreakers:
-#      enabled: true
-#  endpoints:
-#    web:
-#      exposure:
-#        include: *
-#  endpoint:
-#    health:
-#      show-details: always
-
-
-#resilience4j:
-#  circuitbreaker:
-#    instances:
-#      inventory:
-#        registerHealthIndicator: true
-#        eventConsumerBufferSize: 10
-#        slidingWindowType: COUNT_BASED
-#        slidingWindowSize: 5
-#        failureRateThreshold: 50
-#        waitDurationInOpenState: 5s
-#        permittedNumberOfCallsInHalfOpenState: 3
-#        automaticTransitionFromOpenToHalfOpenEnabled: true
-
-
 ---
 
 spring:
@@ -47,6 +20,11 @@ spring:
 integrations:
   core-service:
     url: http://localhost:8080/core
+    read-timeout: 10000
+    write-timeout: 5000
+    connect-timeout: 5000
+  inventory-service:
+    url: http://localhost:8079/inventory
     read-timeout: 10000
     write-timeout: 5000
     connect-timeout: 5000
@@ -77,6 +55,11 @@ spring:
 integrations:
   core-service:
     url: http://core-service:8080/core
+    read-timeout: 10000
+    write-timeout: 5000
+    connect-timeout: 5000
+  inventory-service:
+    url: http://inventory-service:8079/inventory
     read-timeout: 10000
     write-timeout: 5000
     connect-timeout: 5000

@@ -1,4 +1,4 @@
-package com.example.teamarket.core.entity;
+package com.example.teamarket.inventory.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,20 +12,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+@Data
 @Entity
-@Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Products")
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -33,31 +33,6 @@ public class Product {
     @Column(name = "product_id")
     private Long productId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "price")
-    private BigDecimal price;
-
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
-
-    @Column(name = "effect")
-    private String effect;
-
-    private Timestamp created;
-
-    private Timestamp updated;
-
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "product")
-    private List<ProductImageEntity> imagesLinks;
-
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "category_id")
-    private Category category;
 }

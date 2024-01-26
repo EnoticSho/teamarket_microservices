@@ -5,12 +5,12 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Configuration properties for integrating with the CoreService.
+ * Configuration properties for integrating with the InventoryService.
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "integrations.core-service")
-public class CoreServiceIntegrationProperties {
+@ConfigurationProperties(prefix = "integrations.inventory-service")
+public class InventoryServiceIntegrationProperties {
     private String url;
     private Integer connectTimeout;
     private Integer readTimeout;

@@ -3,3 +3,5 @@ databaseChangeLog:
       file: migration/v0.0/ddl/2024-01-16--01-create-table.sql
   - include:
       file: migration/v0.0/dml/2024-01-16--01-insert-tables.sql
+  - include:
+      file: migration/v0.0/ddl/2024-01-26--02-triggers.sql

@@ -4,6 +4,7 @@ import com.example.teamarket.cart.dto.response.CartDto;
 import com.example.teamarket.cart.dto.response.InfoProductDto;
 import com.example.teamarket.cart.dto.response.StringResponse;
 import com.example.teamarket.cart.exceptions.ResourceNotFoundException;
+import com.example.teamarket.cart.integration.InventoryServiceIntegration;
 import com.example.teamarket.cart.integration.ProductServiceIntegration;
 import com.example.teamarket.cart.mapper.CartMapper;
 import com.example.teamarket.cart.model.Cart;
@@ -23,7 +24,7 @@ import java.util.function.Consumer;
 public class CartServiceImpl implements CartService {
 
     private final ProductServiceIntegration productServiceIntegration;
-
+    private final InventoryServiceIntegration inventoryServiceIntegration;
     private final RedisTemplate<String, Object> redisTemplate;
     private final CartMapper cartMapper;
 
@@ -54,8 +55,10 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void addItemToCart(Long productId, int weight, String uuid) {
-        InfoProductDto product = productServiceIntegration.getProductById(productId);
-        execute(uuid, cart -> cart.addItem(product, weight));
+        if (inventoryServiceIntegration.reserveProduct(productId, weight)) {
+            InfoProductDto product = productServiceIntegration.getProductById(productId);
+            execute(uuid, cart -> cart.addItem(product, weight));
+        }
     }
 
     /**
@@ -100,8 +103,17 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void editItem(String cartId, Long id, int weight) {
-        execute(cartId, cart -> cart.editCartItem(id, weight));
+        if (weight > 0) {
+            if (inventoryServiceIntegration.reserveProduct(id, weight)) {
+                execute(cartId, cart -> cart.editCartItem(id, weight));
+            }
+        }
+        else {
+            inventoryServiceIntegration.returnProduct(id, weight);
+            execute(cartId, cart -> cart.editCartItem(id, weight));
+        }
     }
+
 
     private void execute(String cartUuid, Consumer<Cart> operation) {
         log.debug("Executing operation on cart with UUID: {}", cartUuid);
