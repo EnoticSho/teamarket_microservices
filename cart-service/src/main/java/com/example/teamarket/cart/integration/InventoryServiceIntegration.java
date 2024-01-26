@@ -12,7 +12,6 @@ public class InventoryServiceIntegration {
 
     private final WebClient integrationServiceWebClient;
 
-
     public Boolean reserveProduct(Long productId, int quantity) {
         return integrationServiceWebClient.patch()
                 .uri("/v1/api/inventory/reserve/" + productId + "/" + quantity)

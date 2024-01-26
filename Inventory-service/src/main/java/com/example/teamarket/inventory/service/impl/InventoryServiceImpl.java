@@ -34,7 +34,7 @@ public class InventoryServiceImpl implements InventoryService {
     public void returnProduct(Long productId, int quantity) {
         Product product = checkAvailability(productId);
 
-        product.setStockQuantity(product.getStockQuantity() + quantity);
+        product.setStockQuantity(product.getStockQuantity() + Math.abs(quantity));
         inventoryRepository.save(product);
     }
 

@@ -1,13 +1,13 @@
 package com.example.teamarket.cart.model;
 
 import com.example.teamarket.cart.dto.response.InfoProductDto;
+import com.example.teamarket.cart.utils.CartUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,41 +15,42 @@ import java.util.Map;
 @Component
 @NoArgsConstructor
 public class Cart implements Serializable {
+    private static final BigDecimal HUNDRED = new BigDecimal("100");
+    private static final int SCALE = 2;
+
     private final Map<Long, CartItem> itemsMap = new HashMap<>();
     private BigDecimal totalCost = BigDecimal.ZERO;
 
     public void addItem(InfoProductDto infoProductDto, int weight) {
-        CartItem cartItem = itemsMap.get(infoProductDto.getProductId());
+        CartItem cartItem = itemsMap.get(infoProductDto.productId());
         if (cartItem != null) {
             cartItem.changeQuantity(weight);
         }
         else {
-            cartItem = new CartItem();
-            cartItem.setId(infoProductDto.getProductId());
-            cartItem.setTitle(infoProductDto.getName());
-            cartItem.setQuantity(weight);
-            cartItem.setCostByHundredGrams(infoProductDto.getPrice());
-            cartItem.setAmount(infoProductDto.getPrice()
-                    .multiply(BigDecimal.valueOf(weight).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
-            itemsMap.put(infoProductDto.getProductId(), cartItem);
+            CartItem build = CartItem.builder()
+                    .id(infoProductDto.productId())
+                    .title(infoProductDto.name())
+                    .quantity(weight)
+                    .costByHundredGrams(infoProductDto.price())
+                    .amount(CartUtils.calculateAmount(infoProductDto.price(), weight))
+                    .build();
+            itemsMap.put(infoProductDto.productId(), build);
         }
-        recalculate();
+        recalculateTotalCost();
     }
 
     public void editCartItem(Long id, int weight) {
         CartItem cartItem = itemsMap.get(id);
         if (cartItem != null) {
             cartItem.changeQuantity(weight);
-            if (cartItem.getQuantity() <= 0) {
-                itemsMap.remove(id);
-            }
-            recalculate();
+            removeItemIfNecessary(id, cartItem);
+            recalculateTotalCost();
         }
     }
 
     public void removeItemById(Long id) {
         if (itemsMap.remove(id) != null) {
-            recalculate();
+            recalculateTotalCost();
         }
     }
 
@@ -58,9 +59,15 @@ public class Cart implements Serializable {
         totalCost = BigDecimal.ZERO;
     }
 
-    private void recalculate() {
+    private void recalculateTotalCost() {
         totalCost = itemsMap.values().stream()
                 .map(CartItem::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private void removeItemIfNecessary(Long id, CartItem cartItem) {
+        if (cartItem.getQuantity() <= 0) {
+            itemsMap.remove(id);
+        }
     }
 }

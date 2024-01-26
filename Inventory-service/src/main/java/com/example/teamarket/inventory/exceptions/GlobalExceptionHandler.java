@@ -28,5 +28,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ResourceEndedInStock.class)
+    public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(ResourceEndedInStock ex) {
+        ApiErrorResponse response = new ApiErrorResponse();
+
+        response.setErrorMessage(ex.getMessage());
+        response.setErrorCode(HttpStatus.BAD_REQUEST.value());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
 

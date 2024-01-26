@@ -37,24 +37,19 @@ public class HeadersFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Extract the 'email' and 'roles' headers from the request
         String login = request.getHeader("email");
         String roles = request.getHeader("roles");
 
         if (login != null && roles != null) {
-            // Construct a list of GrantedAuthority objects based on the 'roles' header
             List<GrantedAuthority> authorities = Arrays.stream(roles.split(","))
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
-            // Create an Authentication object with the extracted information
             Authentication authentication = new UsernamePasswordAuthenticationToken(login, null, authorities);
 
-            // Set the Authentication object in the Spring Security context
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        // Allow the request to continue to the next filter in the filter chain
         filterChain.doFilter(request, response);
     }
 }

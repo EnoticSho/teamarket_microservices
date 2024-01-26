@@ -2,20 +2,17 @@ package com.example.teamarket.order.integration;
 
 import com.example.teamarket.order.dto.response.InfoUserDto;
 import com.example.teamarket.order.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class UserServiceIntegration {
 
     private final WebClient userServiceWebClient;
-
-    public UserServiceIntegration(@Qualifier("userServiceWebClient") WebClient userServiceWebClient) {
-        this.userServiceWebClient = userServiceWebClient;
-    }
 
     public InfoUserDto getUserByEmail(String email) {
         return userServiceWebClient.get()

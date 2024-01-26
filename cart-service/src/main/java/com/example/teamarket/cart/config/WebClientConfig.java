@@ -28,10 +28,10 @@ public class WebClientConfig {
     @Bean
     public WebClient integrationServiceWebClient() {
         return createWebClient(
-                integrationProperties.getConnectTimeout(),
-                integrationProperties.getReadTimeout(),
-                integrationProperties.getWriteTimeout(),
-                integrationProperties.getUrl()
+                integrationProperties.connectTimeout(),
+                integrationProperties.readTimeout(),
+                integrationProperties.writeTimeout(),
+                integrationProperties.url()
         );
     }
 
@@ -43,10 +43,10 @@ public class WebClientConfig {
     @Bean
     public WebClient productServiceWebClient() {
         return createWebClient(
-                coreServiceIntegrationProperties.getConnectTimeout(),
-                coreServiceIntegrationProperties.getReadTimeout(),
-                coreServiceIntegrationProperties.getWriteTimeout(),
-                coreServiceIntegrationProperties.getUrl()
+                coreServiceIntegrationProperties.connectTimeout(),
+                coreServiceIntegrationProperties.readTimeout(),
+                coreServiceIntegrationProperties.writeTimeout(),
+                coreServiceIntegrationProperties.url()
         );
     }
 

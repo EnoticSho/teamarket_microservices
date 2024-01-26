@@ -5,7 +5,6 @@ import com.example.teamarket.auth.dto.request.SignUpRequest;
 import com.example.teamarket.auth.dto.response.JwtAuthenticationResponse;
 import com.example.teamarket.auth.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +29,7 @@ public class AuthController {
     /**
      * Registers a new user and returns a JWT for authentication.
      *
-     * @param cartId The cart identifier passed in the request header, representing the user's cart.
+     * @param cartId  The cart identifier passed in the request header, representing the user's cart.
      * @param request The request object containing the user's registration data.
      * @return A {@link JwtAuthenticationResponse} object containing the JWT token and authentication information.
      */
@@ -38,14 +37,14 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Register user and issue token", description = "Registers a new user and issues a JWT token for subsequent authentication.")
     public JwtAuthenticationResponse signUp(@RequestHeader("cart_id") String cartId,
-                                            @RequestBody @Valid SignUpRequest request) {
+                                            @RequestBody SignUpRequest request) {
         return authenticationService.signUp(request, cartId);
     }
 
     /**
      * Authenticates a user and returns a JWT for access.
      *
-     * @param cartId The cart identifier passed in the request header.
+     * @param cartId  The cart identifier passed in the request header.
      * @param request The request object containing the user's login credentials.
      * @return A {@link JwtAuthenticationResponse} object containing the JWT token and authentication information.
      */
@@ -53,14 +52,14 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Authenticate user and issue token", description = "Authenticates a user based on credentials and issues a JWT token for access.")
     public JwtAuthenticationResponse signIn(@RequestHeader("cart_id") String cartId,
-                                            @RequestBody @Valid SignInRequest request) {
+                                            @RequestBody SignInRequest request) {
         return authenticationService.signIn(request, cartId);
     }
 
     /**
      * Refreshes the user's access token.
      *
-     * @param cartId The cart identifier passed in the request header.
+     * @param cartId       The cart identifier passed in the request header.
      * @param refreshToken The refresh token used to obtain a new access token.
      * @return A refreshed {@link JwtAuthenticationResponse} object containing a new JWT access token.
      */

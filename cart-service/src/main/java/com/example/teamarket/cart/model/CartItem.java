@@ -1,16 +1,18 @@
 package com.example.teamarket.cart.model;
 
+import com.example.teamarket.cart.utils.CartUtils;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItem implements Serializable {
@@ -21,8 +23,7 @@ public class CartItem implements Serializable {
     private BigDecimal amount;
 
     public void changeQuantity(int weight) {
-        quantity = quantity + weight;
-        amount = costByHundredGrams.multiply(BigDecimal.valueOf(quantity)
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
+        quantity += weight;
+        amount = CartUtils.calculateAmount(costByHundredGrams, quantity);
     }
 }

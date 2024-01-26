@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaServiceImpl implements KafkaService {
 
+
+
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /**

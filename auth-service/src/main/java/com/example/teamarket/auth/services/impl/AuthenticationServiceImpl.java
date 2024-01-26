@@ -9,6 +9,7 @@ import com.example.teamarket.auth.mapper.UserMapper;
 import com.example.teamarket.auth.services.AuthenticationService;
 import com.example.teamarket.auth.services.JwtService;
 import com.example.teamarket.auth.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,9 +39,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return A JwtAuthenticationResponse containing JWT access and refresh tokens.
      */
     @Transactional
-    public JwtAuthenticationResponse signUp(SignUpRequest request, String cartId) {
+    public JwtAuthenticationResponse signUp(@Valid SignUpRequest request, String cartId) {
         User user = userMapper.toUser(request);
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.password());
         user.setPassword(encodedPassword);
         user.setRole(Role.ROLE_USER);
 
@@ -61,13 +62,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     public JwtAuthenticationResponse signIn(SignInRequest request, String cartId) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
+                request.email(),
+                request.password()
         ));
 
         UserDetails userDetails = userService
                 .userDetailsService()
-                .loadUserByUsername(request.getEmail());
+                .loadUserByUsername(request.email());
 
         String accessJwt = jwtService.generateToken(userDetails, cartId);
         String refreshToken = jwtService.generateRefreshToken(userDetails);

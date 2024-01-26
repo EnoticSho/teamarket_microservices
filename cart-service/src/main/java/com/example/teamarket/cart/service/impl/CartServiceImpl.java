@@ -37,10 +37,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public CartDto getCurrentCart(String cartUuid) {
-        log.debug("Getting current cart with UUID: {}", cartUuid);
         Cart cart = (Cart) redisTemplate.opsForValue().get(cartUuid);
         if (Objects.equals(cart, null)) {
-            log.error("Cart not found with UUID: {}", cartUuid);
             throw ResourceNotFoundException.of(cartUuid, Cart.class);
         }
         return cartMapper.modelToDto(cart);
@@ -116,10 +114,8 @@ public class CartServiceImpl implements CartService {
 
 
     private void execute(String cartUuid, Consumer<Cart> operation) {
-        log.debug("Executing operation on cart with UUID: {}", cartUuid);
         Cart cart = (Cart) redisTemplate.opsForValue().get(cartUuid);
         operation.accept(cart);
         redisTemplate.opsForValue().set(cartUuid, Objects.requireNonNull(cart));
-        log.debug("Operation executed successfully on cart with UUID: {}", cartUuid);
     }
 }

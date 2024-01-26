@@ -31,13 +31,13 @@ public class WebClientConfig {
     public WebClient productServiceWebClient() {
         return WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(properties.url())
                 .clientConnector(new ReactorClientHttpConnector(HttpClient
                         .create()
-                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout())
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.connectTimeout())
                         .doOnConnected(connection -> {
-                            connection.addHandlerLast(new ReadTimeoutHandler(properties.getReadTimeout()));
-                            connection.addHandlerLast(new WriteTimeoutHandler(properties.getWriteTimeout()));
+                            connection.addHandlerLast(new ReadTimeoutHandler(properties.readTimeout()));
+                            connection.addHandlerLast(new WriteTimeoutHandler(properties.writeTimeout()));
                         })))
                 .build();
     }

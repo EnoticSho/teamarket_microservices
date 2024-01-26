@@ -32,10 +32,10 @@ public class WebClientConfig {
     @Bean
     public WebClient cartServiceWebClient() {
         return createWebClient(
-                cartProperties.getConnectTimeout(),
-                cartProperties.getReadTimeout(),
-                cartProperties.getWriteTimeout(),
-                cartProperties.getUrl()
+                cartProperties.connectTimeout(),
+                cartProperties.readTimeout(),
+                cartProperties.writeTimeout(),
+                cartProperties.url()
         );
     }
 
@@ -47,10 +47,10 @@ public class WebClientConfig {
     @Bean
     public WebClient userServiceWebClient() {
         return createWebClient(
-                userProperties.getConnectTimeout(),
-                userProperties.getReadTimeout(),
-                userProperties.getWriteTimeout(),
-                userProperties.getUrl()
+                userProperties.connectTimeout(),
+                userProperties.readTimeout(),
+                userProperties.writeTimeout(),
+                userProperties.url()
         );
     }
 

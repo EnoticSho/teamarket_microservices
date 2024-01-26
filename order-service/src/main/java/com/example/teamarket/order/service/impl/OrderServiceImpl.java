@@ -1,10 +1,11 @@
 package com.example.teamarket.order.service.impl;
 
-import com.example.teamarket.order.dto.response.PaymentInfoDto;
-import com.example.teamarket.order.dto.response.cart.CartDto;
 import com.example.teamarket.order.dto.request.payment.CardInfo;
 import com.example.teamarket.order.dto.request.payment.PaymentRequest;
 import com.example.teamarket.order.dto.response.OrderInfoDto;
+import com.example.teamarket.order.dto.response.PaymentInfoDto;
+import com.example.teamarket.order.dto.response.cart.CartDto;
+import com.example.teamarket.order.dto.response.cart.CartItemDto;
 import com.example.teamarket.order.entities.Order;
 import com.example.teamarket.order.entities.OrderItem;
 import com.example.teamarket.order.entities.OrderType;
@@ -43,41 +44,39 @@ public class OrderServiceImpl implements OrderService {
      * @param email  The user's email address.
      * @return The identifier of the saved order.
      */
+    @Override
     public Long saveOrder(String cartId, String email) {
         CartDto cartDto = cartServiceIntegration.getCartById(cartId);
         Order order = new Order();
         order.setUserEmail(email);
         order.setOrderDate(Timestamp.from(Instant.now()));
         order.setStatus(OrderType.REGISTERED);
-        order.setTotalPrice(cartDto.getTotalCost());
-        List<OrderItem> orderItems = cartDto.getItemsMap().values().stream()
-                .map(cartItemDto -> OrderItem.builder()
-                        .productId(cartItemDto.getId())
-                        .order(order)
-                        .quantity(cartItemDto.getQuantity())
-                        .price(cartItemDto.getCostByHundredGrams())
-                        .build())
+        order.setTotalPrice(cartDto.totalCost());
+
+        List<OrderItem> orderItems = cartDto.itemsMap().values().stream()
+                .map(item -> createOrderItem(item, order))
                 .toList();
+
         order.setItemList(orderItems);
-        Order save = orderRepository.save(order);
-        kafkaService.sendNotification(orderMapper.entityToInfoDto(save));
-        return save.getOrderId();
+        Order savedOrder = orderRepository.save(order);
+        kafkaService.sendNotification(orderMapper.entityToInfoDto(savedOrder));
+        return savedOrder.getOrderId();
     }
 
     /**
      * Sends a payment request for the specified order.
      *
-     * @param orderId   The identifier of the order.
-     * @param cardInfo  The card information for payment.
+     * @param orderId  The identifier of the order.
+     * @param cardInfo The card information for payment.
      */
     @Override
     public void sendPaymentRequest(Long orderId, CardInfo cardInfo) {
         OrderInfoDto orderById = findOrderById(orderId);
-        PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.setOrderId(orderId);
-        paymentRequest.setEmail(orderById.getUserEmail());
-        paymentRequest.setTotal(orderById.getTotalPrice());
-        paymentRequest.setCardInfo(cardInfo);
+        PaymentRequest paymentRequest = new PaymentRequest(
+                orderId,
+                orderById.userEmail(),
+                orderById.totalPrice(),
+                cardInfo);
 
         kafkaService.sendPaymentRequest(paymentRequest);
     }
@@ -98,14 +97,22 @@ public class OrderServiceImpl implements OrderService {
     /**
      * Handles payment status changes received via Kafka messages.
      *
-     * @param paymentInfoDto The payment information.
+     * @param paymentInfo The payment information.
      */
     @Override
     @KafkaListener(topics = "paymentInfoTopic")
-    public void changeOrderStatus(PaymentInfoDto paymentInfoDto) {
-        if (paymentInfoDto.getStatus().equalsIgnoreCase("Completed")) {
-            orderRepository.updateStatus(paymentInfoDto.getOrderId(), String.valueOf(OrderType.PAID));
-            System.out.println(findOrderById(paymentInfoDto.getOrderId()));
+    public void changeOrderStatus(PaymentInfoDto paymentInfo) {
+        if ("Completed".equalsIgnoreCase(paymentInfo.status())) {
+            orderRepository.updateStatus(paymentInfo.orderId(), OrderType.PAID.name());
         }
+    }
+
+    private OrderItem createOrderItem(CartItemDto cartItemDto, Order order) {
+        return OrderItem.builder()
+                .productId(cartItemDto.id())
+                .order(order)
+                .quantity(cartItemDto.quantity())
+                .price(cartItemDto.costByHundredGrams())
+                .build();
     }
 }

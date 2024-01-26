@@ -79,12 +79,12 @@ public class ProductServiceImpl implements ProductService {
     public Long saveProduct(@Valid ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
 
-        product.setCategory(categoryRepository.findByName(productDto.getCategory())
+        product.setCategory(categoryRepository.findByName(productDto.category())
                 .orElseGet(() -> Category.builder()
-                        .name(productDto.getCategory())
+                        .name(productDto.category())
                         .build()));
 
-        product.setImagesLinks(productDto.getImagesLinks().stream()
+        product.setImagesLinks(productDto.imagesLinks().stream()
                 .map((link) -> ProductImageEntity.builder()
                         .product(product)
                         .imageUrl(link)
