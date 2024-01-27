@@ -107,8 +107,8 @@ public class CartServiceImpl implements CartService {
             }
         }
         else {
-            inventoryServiceIntegration.returnProduct(id, weight);
             execute(cartId, cart -> cart.editCartItem(id, weight));
+            inventoryServiceIntegration.returnProduct(id, weight);
         }
     }
 

@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'io.freefair.lombok' version '8.4'
+    id 'com.github.akazver.mapstruct' version '1.0.5'
 }
 
 group = 'com.example.teamarket'
@@ -20,13 +22,11 @@ repositories {
 ext {
     set('springCloudVersion', "2023.0.0")
     set('SpingDoc', "2.2.0")
-    set('Mapper', "1.6.0.Beta1")
     set('Jedis', "5.1.0")
 
 }
 
 dependencies {
-//    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${SpingDoc}"
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
@@ -38,13 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
-    implementation "org.mapstruct:mapstruct:${Mapper}"
     implementation "redis.clients:jedis:${Jedis}"
-
-    compileOnly 'org.projectlombok:lombok'
-
-    annotationProcessor "org.mapstruct:mapstruct-processor:${Mapper}"
-    annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'

@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset sergey:6
+--changeset sergey:10
 CREATE OR REPLACE FUNCTION update_product_timestamp()
 RETURNS TRIGGER AS '
 BEGIN
@@ -14,7 +14,7 @@ CREATE TRIGGER update_product_trigger
     FOR EACH ROW
     EXECUTE FUNCTION update_product_timestamp();
 
---changeset sergey:7
+--changeset sergey:11
 CREATE OR REPLACE FUNCTION update_review_timestamp()
 RETURNS TRIGGER AS '
 BEGIN

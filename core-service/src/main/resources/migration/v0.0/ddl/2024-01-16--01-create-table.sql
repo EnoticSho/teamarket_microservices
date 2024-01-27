@@ -8,6 +8,7 @@ CREATE TABLE Categories
     description TEXT
 );
 
+--changeset sergey:2
 CREATE TABLE Products
 (
     product_id     SERIAL PRIMARY KEY,
@@ -22,7 +23,7 @@ CREATE TABLE Products
     FOREIGN KEY (category_id) REFERENCES Categories (category_id)
 );
 
-
+--changeset sergey:3
 CREATE TABLE ProductImages
 (
     image_id   SERIAL PRIMARY KEY,
@@ -31,13 +32,14 @@ CREATE TABLE ProductImages
     FOREIGN KEY (product_id) REFERENCES Products (product_id) ON DELETE CASCADE
 );
 
-
+--changeset sergey:4
 CREATE TABLE Roles
 (
     role_id   SERIAL PRIMARY KEY,
     role_name VARCHAR(15) NOT NULL
 );
 
+--changeset sergey:5
 CREATE TABLE Users
 (
     user_id       SERIAL PRIMARY KEY,
@@ -48,6 +50,7 @@ CREATE TABLE Users
     role_id       INT REFERENCES Roles (role_id)
 );
 
+--changeset sergey:6
 CREATE TABLE Orders
 (
     order_id    SERIAL PRIMARY KEY,
@@ -57,7 +60,7 @@ CREATE TABLE Orders
     total_price DECIMAL(10, 2)
 );
 
-
+--changeset sergey:7
 CREATE TABLE OrderDetails
 (
     order_detail_id SERIAL PRIMARY KEY,
@@ -68,6 +71,7 @@ CREATE TABLE OrderDetails
     FOREIGN KEY (order_id) REFERENCES Orders (order_id) ON DELETE CASCADE
 );
 
+--changeset sergey:8
 CREATE TABLE Reviews
 (
     review_id   SERIAL PRIMARY KEY,
@@ -78,6 +82,7 @@ CREATE TABLE Reviews
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+--changeset sergey:9
 CREATE TABLE Payment
 (
     payment_id SERIAL PRIMARY KEY,

@@ -12,7 +12,7 @@
 
 
 
-FROM openjdk:17-slim
+FROM openjdk:17
 
 ADD build/libs/*.jar app.jar
 

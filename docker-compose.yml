@@ -92,86 +92,90 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     networks:
       - some-net
-#
-#  config-server:
-#    build:
-#      context: config-server
-#      dockerfile: Dockerfile
-#    container_name: config-server
-#    expose:
-#      - "8888:8888"
-#    ports:
-#      - "8888:8888"
-#    restart: always
-#    networks:
-#      - some-net
-#    depends_on:
-#      broker:
-#        condition: service_started
-#
-#  eureka-service:
-#    build:
-#      context: discovery-service
-#      dockerfile: Dockerfile
-#    container_name: eureka-service
-#    ports:
-#      - "8761:8761"
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://eureka-service:8761/actuator/health" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
-#      start_period: 1m
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#    networks:
-#      - some-net
-#    depends_on:
-#      config-server:
-#        condition: service_started
-#
-#  api-gateway:
-#    build:
-#      context: api-gateway
-#      dockerfile: Dockerfile
-#    container_name: api-gateway
-#    ports:
-#      - "5555:5555"
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://api-gateway:5555/actuator/health" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#    networks:
-#      - some-net
-#    depends_on:
-#      config-server:
-#        condition: service_started
-#
-#  core-service:
-#    build:
-#      context: core-service
-#      dockerfile: Dockerfile
-#    container_name: core-service
-#    ports:
-#      - "8080:8080"
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://core-service:8080/actuator/health" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#    networks:
-#      - some-net
-#    depends_on:
-#      config-server:
-#        condition: service_started
+
+  config-server:
+    build:
+      context: config-server
+      dockerfile: Dockerfile
+    container_name: config-server
+    expose:
+      - "8888:8888"
+    ports:
+      - "8888:8888"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - some-net
+    depends_on:
+      broker:
+        condition: service_started
+
+  eureka-service:
+    build:
+      context: discovery-service
+      dockerfile: Dockerfile
+    container_name: eureka-service
+    ports:
+      - "8761:8761"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - some-net
+    depends_on:
+      config-server:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "5555:5555"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5555/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - some-net
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+
+  core-service:
+    build:
+      context: core-service
+      dockerfile: Dockerfile
+    container_name: core-service
+    ports:
+      - "8080:8080"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/core/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - some-net
+    depends_on:
+      api-gateway:
+        condition: service_healthy
 #
 #  cart-service:
 #    build:
@@ -182,7 +186,7 @@ services:
 #      - "8090:8090"
 #    restart: always
 #    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://cart-service:8090/actuator/health" ]
+#      test: [ "CMD", "curl", "-f", "http://localhost:8090/cart/actuator/health" ]
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
@@ -191,8 +195,8 @@ services:
 #    networks:
 #      - some-net
 #    depends_on:
-#      config-server:
-#        condition: service_started
+#      core-service:
+#        condition: service_healthy
 #
 #  order-service:
 #    build:
@@ -205,13 +209,13 @@ services:
 #    environment:
 #      SPRING_PROFILES_ACTIVE: docker
 #    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://order-service:8991/actuator/health" ]
+#      test: [ "CMD", "curl", "-f", "http://localhost:8991/order/actuator/health" ]
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
 #    depends_on:
-#      config-server:
-#        condition: service_started
+#      cart-service:
+#        condition: service_healthy
 #    networks:
 #      some-net:
 #
@@ -226,13 +230,13 @@ services:
 #    environment:
 #      SPRING_PROFILES_ACTIVE: docker
 #    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://notification-service:9999/actuator/health" ]
+#      test: [ "CMD", "curl", "-f", "http://localhost:9999/notification/actuator/health" ]
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
 #    depends_on:
-#      config-server:
-#        condition: service_started
+#      order-service:
+#        condition: service_healthy
 #    networks:
 #      some-net:
 #
@@ -247,17 +251,17 @@ services:
 #    environment:
 #      SPRING_PROFILES_ACTIVE: docker
 #    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://auth-service:8980/actuator/health" ]
+#      test: [ "CMD", "curl", "-f", "http://localhost:8980/auth/actuator/health" ]
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
 #    depends_on:
-#      config-server:
-#        condition: service_started
+#      notification-service:
+#        condition: service_healthy
 #    networks:
 #      some-net:
 
-#  review-service:
+#  reviews-service:
 #    build:
 #      context: reviews-service
 #      dockerfile: Dockerfile
@@ -268,13 +272,13 @@ services:
 #    environment:
 #      SPRING_PROFILES_ACTIVE: docker
 #    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://review-service:8980/actuator/health" ]
+#      test: [ "CMD", "curl", "-f", "http://localhost:8778/review/actuator/health" ]
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
 #    depends_on:
-#      config-server:
-#        condition: service_started
+#      auth-service:
+#        condition: service_healthy
 #    networks:
 #      some-net:
 
@@ -289,13 +293,34 @@ services:
 #    environment:
 #      SPRING_PROFILES_ACTIVE: docker
 #    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://payment-service:8980/actuator/health" ]
+#      test: [ "CMD", "curl", "-f", "http://localhost:7777/payment/actuator/health" ]
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
 #    depends_on:
-#      config-server:
-#        condition: service_started
+#      reviews-service:
+#        condition: service_healthy
+#    networks:
+#      some-net:
+
+#  inventory-service:
+#    build:
+#      context: inventory-service
+#      dockerfile: Dockerfile
+#    container_name: inventory-service
+#    ports:
+#      - "8079:8079"
+#    restart: always
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:8079/inventory/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    depends_on:
+#      payment-service:
+#        condition: service_healthy
 #    networks:
 #      some-net:
 

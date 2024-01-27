@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'io.freefair.lombok' version '8.4'
+    id 'com.github.akazver.mapstruct' version '1.0.5'
 }
 
 group = 'com.example.teamarket'
@@ -15,7 +17,6 @@ configurations {
 
 ext {
     set('springCloudVersion', "2023.0.0")
-    set('Mapper', "1.5.3.Final")
     set('SpingDoc', "2.2.0")
 }
 
@@ -42,14 +43,8 @@ dependencies {
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation "org.mapstruct:mapstruct:${Mapper}"
-
-    compileOnly 'org.projectlombok:lombok'
 
     runtimeOnly 'org.postgresql:postgresql'
-
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor "org.mapstruct:mapstruct-processor:${Mapper}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'

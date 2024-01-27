@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'io.freefair.lombok' version '8.4'
+    id 'com.github.akazver.mapstruct' version '1.0.5'
 }
 
 group = 'com.example.teamarket'
@@ -21,7 +23,6 @@ ext {
     set('springCloudVersion', "2023.0.0")
     set('JsonToken', "0.12.3")
     set('SpingDoc', "2.2.0")
-    set('Mapper', "1.5.3.Final")
     set('Crypt', "0.4")
 }
 
@@ -38,17 +39,11 @@ dependencies {
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
     implementation "io.jsonwebtoken:jjwt-api:${JsonToken}"
-    implementation "org.mapstruct:mapstruct:${Mapper}"
     implementation "org.mindrot:jbcrypt:${Crypt}"
-
-    annotationProcessor "org.mapstruct:mapstruct-processor:${Mapper}"
-    annotationProcessor 'org.projectlombok:lombok'
 
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonToken}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonToken}"
     runtimeOnly 'org.postgresql:postgresql'
-
-    compileOnly 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'

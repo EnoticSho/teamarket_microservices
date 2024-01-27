@@ -1,5 +1,6 @@
 --liquibase formatted sql
---changeset sergey:2
+
+--changeset sergey:12
 INSERT INTO categories(name)
 VALUES ('Пуэр'),
        ('Улун'),
@@ -7,7 +8,7 @@ VALUES ('Пуэр'),
        ('Красный чай'),
        ('Зеленый чай');
 
---changeset sergey:3
+--changeset sergey:13
 INSERT INTO products(name, price, category_id, description, effect, stock_quantity)
 VALUES ('Шень Шань Лао Шу', 10, 1, 'Лао Тун Чжи - это качество Мэнхайской чайной фабрики без подделок. Сама компания основана Чжоу Бин Ляном - бывшим управляющим и технологом Мэнхайской чайной фабрики, и Лю Гуалин - уважаемого эксперта пуэра в Юньнани.
 Чжоу Бин Лян - это тот самый человек, придумавший рецепт изготовления Шу Пуэра в 1973 году и при помощи Ву Ци Ин, президента Куньминской чайной фабрики, они запустили его массовое производство в 1975г. Так что эти двое точно знают немного о чае.
@@ -203,7 +204,7 @@ VALUES (14,
        (14,
         'https://dl.dropboxusercontent.com/scl/fi/ce47xrugyr2o7tnkyq7z5/3-removebg-preview.png?rlkey=11cxi3191lqzcnjln3ngr315b&raw=1');
 
---changeset sergey:4
+--changeset sergey:14
 
 Insert Into roles(role_name)
 VALUES ('ROLE_USER'),
@@ -214,7 +215,7 @@ VALUES ('Alisa', 'alisa@mail.ru', '$2a$12$OX6l312SSuvcOAILp0Laj.TCjQnfdnX/u8bmzG
        ('Sanya', 'enoticsho@gmail.com', '$2a$12$TZdf8upXkKCo1vsMBq4fLO1u5eR2j8oFGnNJwbLupQ1LLBhBN6PEW', 2);
 
 
---changeset sergey:5
+--changeset sergey:15
 
 INSERT INTO Reviews (product_id, Email, rating, comment)
 VALUES (1, 'user1@example.com', 5, 'Отличный чай, очень ароматный!'),
