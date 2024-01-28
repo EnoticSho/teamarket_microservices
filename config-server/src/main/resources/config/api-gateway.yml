@@ -40,6 +40,10 @@ spring:
           uri: lb://cart-service/
           predicates:
             - Path=/cart/v1/api/cart/generate_uuid
+        - id: cart-service-swagger
+          uri: lb://cart-service/
+          predicates:
+            - Path=/cart/swagger-ui/**
 #        - id: cart-service-swagger
 #          uri: lb://cart-service/
 #          predicates:
@@ -62,6 +66,10 @@ spring:
           uri: lb://auth-service/
           predicates:
             - Path=/auth/**
+        - id: order-service-swagger
+          uri: lb://order-service/
+          predicates:
+            - Path=/order/swagger-ui/**
         - id: order-service
           uri: lb://order-service/
           predicates:

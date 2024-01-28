@@ -24,6 +24,6 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     @KafkaListener(topics = "notificationTopic")
     public void handleNotification(OrderInfoDto orderInfoDto) {
-        mailService.sendEmail(orderInfoDto.getUserEmail(), orderInfoDto.getStatus(), orderInfoDto.toString());
+        mailService.sendEmail(orderInfoDto.getUserEmail(), orderInfoDto.getStatus(), orderInfoDto);
     }
 }

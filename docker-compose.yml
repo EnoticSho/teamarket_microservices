@@ -93,89 +93,89 @@ services:
     networks:
       - some-net
 
-  config-server:
-    build:
-      context: config-server
-      dockerfile: Dockerfile
-    container_name: config-server
-    expose:
-      - "8888:8888"
-    ports:
-      - "8888:8888"
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    networks:
-      - some-net
-    depends_on:
-      broker:
-        condition: service_started
-
-  eureka-service:
-    build:
-      context: discovery-service
-      dockerfile: Dockerfile
-    container_name: eureka-service
-    ports:
-      - "8761:8761"
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    networks:
-      - some-net
-    depends_on:
-      config-server:
-        condition: service_healthy
-
-  api-gateway:
-    build:
-      context: api-gateway
-      dockerfile: Dockerfile
-    container_name: api-gateway
-    ports:
-      - "5555:5555"
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5555/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    networks:
-      - some-net
-    depends_on:
-      eureka-service:
-        condition: service_healthy
-
-  core-service:
-    build:
-      context: core-service
-      dockerfile: Dockerfile
-    container_name: core-service
-    ports:
-      - "8080:8080"
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/core/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    networks:
-      - some-net
-    depends_on:
-      api-gateway:
-        condition: service_healthy
+#  config-server:
+#    build:
+#      context: config-server
+#      dockerfile: Dockerfile
+#    container_name: config-server
+#    expose:
+#      - "8888:8888"
+#    ports:
+#      - "8888:8888"
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    networks:
+#      - some-net
+#    depends_on:
+#      broker:
+#        condition: service_started
+#
+#  eureka-service:
+#    build:
+#      context: discovery-service
+#      dockerfile: Dockerfile
+#    container_name: eureka-service
+#    ports:
+#      - "8761:8761"
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    networks:
+#      - some-net
+#    depends_on:
+#      config-server:
+#        condition: service_healthy
+#
+#  api-gateway:
+#    build:
+#      context: api-gateway
+#      dockerfile: Dockerfile
+#    container_name: api-gateway
+#    ports:
+#      - "5555:5555"
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:5555/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    networks:
+#      - some-net
+#    depends_on:
+#      eureka-service:
+#        condition: service_healthy
+#
+#  core-service:
+#    build:
+#      context: core-service
+#      dockerfile: Dockerfile
+#    container_name: core-service
+#    ports:
+#      - "8080:8080"
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:8080/core/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    networks:
+#      - some-net
+#    depends_on:
+#      api-gateway:
+#        condition: service_healthy
 #
 #  cart-service:
 #    build:
