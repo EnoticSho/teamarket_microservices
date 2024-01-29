@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 public record CartItemDto(
         Long id,
-        String title,
-        Integer quantity,
+        String name,
+        Integer weight,
         BigDecimal costByHundredGrams,
-        BigDecimal amount) {
+        BigDecimal sum) {
 }

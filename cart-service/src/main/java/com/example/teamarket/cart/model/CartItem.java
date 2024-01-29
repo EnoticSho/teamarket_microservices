@@ -17,13 +17,13 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class CartItem implements Serializable {
     private Long id;
-    private String title;
-    private Integer quantity;
+    private String name;
+    private Integer weight;
     private BigDecimal costByHundredGrams;
-    private BigDecimal amount;
+    private BigDecimal sum;
 
     public void changeQuantity(int weight) {
-        quantity += weight;
-        amount = CartUtils.calculateAmount(costByHundredGrams, quantity);
+        this.weight += weight;
+        sum = CartUtils.calculateAmount(costByHundredGrams, this.weight);
     }
 }

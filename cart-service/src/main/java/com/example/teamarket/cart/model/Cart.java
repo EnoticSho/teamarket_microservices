@@ -29,10 +29,10 @@ public class Cart implements Serializable {
         else {
             CartItem build = CartItem.builder()
                     .id(infoProductDto.productId())
-                    .title(infoProductDto.name())
-                    .quantity(weight)
+                    .name(infoProductDto.name())
+                    .weight(weight)
                     .costByHundredGrams(infoProductDto.price())
-                    .amount(CartUtils.calculateAmount(infoProductDto.price(), weight))
+                    .sum(CartUtils.calculateAmount(infoProductDto.price(), weight))
                     .build();
             itemsMap.put(infoProductDto.productId(), build);
         }
@@ -61,12 +61,12 @@ public class Cart implements Serializable {
 
     private void recalculateTotalCost() {
         totalCost = itemsMap.values().stream()
-                .map(CartItem::getAmount)
+                .map(CartItem::getSum)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void removeItemIfNecessary(Long id, CartItem cartItem) {
-        if (cartItem.getQuantity() <= 0) {
+        if (cartItem.getWeight() <= 0) {
             itemsMap.remove(id);
         }
     }
