@@ -1,12 +1,11 @@
 package com.example.teamarket.auth.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 public enum Role {
-    ROLE_ADMIN(2),
-    ROLE_USER(1);
+    ROLE_USER(1),
+    ROLE_ADMIN(2);
 
     private final int id;
 

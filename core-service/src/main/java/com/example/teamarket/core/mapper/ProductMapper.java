@@ -27,6 +27,10 @@ public interface ProductMapper {
     @Mapping(source = "category", target = "category", qualifiedByName = "mapCategory")
     InfoProductDto productToInfoProductDto(Product product);
 
+//    @Mapping(target = "productId", ignore = true)
+//    @Mapping(source = "category", target = "category", qualifiedByName = "mapStringToCategory")
+//    Product merge(@MappingTarget Product product, ProductDto productDto);
+
     @Named("mapImageLinksToString")
     default List<String> mapImageLinksToString(List<ProductImageEntity> imageEntities) {
         if (imageEntities == null) {

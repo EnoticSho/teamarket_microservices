@@ -12,7 +12,6 @@ import com.example.teamarket.auth.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserService userService;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
@@ -61,11 +59,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return A JwtAuthenticationResponse containing JWT access and refresh tokens.
      */
     public JwtAuthenticationResponse signIn(SignInRequest request, String cartId) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.email(),
-                request.password()
-        ));
-
         UserDetails userDetails = userService
                 .userDetailsService()
                 .loadUserByUsername(request.email());

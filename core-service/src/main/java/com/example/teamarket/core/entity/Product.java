@@ -12,17 +12,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Products")
@@ -52,10 +55,11 @@ public class Product {
 
     private Timestamp updated;
 
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "product")
-    private List<ProductImageEntity> imagesLinks;
+    private List<ProductImageEntity> imagesLinks = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")

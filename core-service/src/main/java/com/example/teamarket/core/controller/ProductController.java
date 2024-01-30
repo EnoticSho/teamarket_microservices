@@ -26,7 +26,7 @@ public class ProductController {
      *
      * @param minPrice The minimum price filter (optional).
      * @param maxPrice The maximum price filter (optional).
-     * @param title    The title filter (optional).
+     * @param name    The title filter (optional).
      * @param page     The page number for pagination (default is 0).
      * @param count    The number of items per page (default is 10).
      * @return A list of {@link InfoProductDto} representing the products.
@@ -37,14 +37,14 @@ public class ProductController {
     public List<InfoProductDto> getAllProducts(
             @RequestParam(required = false, name = "min_price") Integer minPrice,
             @RequestParam(required = false, name = "max_price") Integer maxPrice,
-            @RequestParam(required = false, name = "title") String title,
+            @RequestParam(required = false, name = "name") String name,
             @RequestParam(defaultValue = "0", name = "p") int page,
             @RequestParam(defaultValue = "10", name = "count") int count
     ) {
         page = page > 0 ? page : 0;
         count = count > 0 ? count : 10;
 
-        return productService.findAllProducts(maxPrice, minPrice, title, page, count);
+        return productService.findAllProducts(maxPrice, minPrice, name, page, count);
     }
 
     /**
@@ -72,6 +72,15 @@ public class ProductController {
     @Operation(summary = "Save a product")
     public Long createProduct(@RequestBody ProductDto productDto) {
         return productService.saveProduct(productDto);
+    }
+
+    @PutMapping("/{id}")
+//    @PreAuthorize(value = "hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "update a product")
+    public Long updateProduct(@PathVariable Long id,
+                              @RequestBody ProductDto productDto) {
+        return productService.updateProduct(id, productDto);
     }
 
     /**

@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
         return OrderItem.builder()
                 .productId(cartItemDto.id())
                 .order(order)
-                .quantity(cartItemDto.quantity())
+                .quantity(cartItemDto.weight())
                 .price(cartItemDto.costByHundredGrams())
                 .build();
     }

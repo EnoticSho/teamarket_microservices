@@ -15,6 +15,9 @@ import com.example.teamarket.core.service.ProductService;
 import com.example.teamarket.core.specification.ProductSpecifications;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -40,14 +43,14 @@ public class ProductServiceImpl implements ProductService {
      *
      * @param maxPrice The maximum price filter for products.
      * @param minPrice The minimum price filter for products.
-     * @param title    The title filter for products.
+     * @param name    The name filter for products.
      * @param page     The page number for pagination.
      * @param count    The number of products to retrieve per page.
      * @return A list of InfoProductDto objects representing the filtered products.
      */
     @Override
-    public List<InfoProductDto> findAllProducts(Integer maxPrice, Integer minPrice, String title, int page, int count) {
-        Specification<Product> specByFilter = createSpecByFilter(maxPrice, minPrice, title);
+    public List<InfoProductDto> findAllProducts(Integer maxPrice, Integer minPrice, String name, int page, int count) {
+        Specification<Product> specByFilter = createSpecByFilter(maxPrice, minPrice, name);
         return productRepository.findAll(specByFilter, PageRequest.of(page, count)).stream()
                 .map(productMapper::productToInfoProductDto)
                 .toList();
@@ -61,6 +64,7 @@ public class ProductServiceImpl implements ProductService {
      * @throws ResourceNotFoundException if the product with the given ID is not found.
      */
     @Override
+    @Cacheable("products")
     public InfoProductDto findById(Long id) {
         List<ReviewInfoDto> productById = reviewServiceIntegration.getProductReviewsById(id);
         InfoProductDto infoProductDto = productRepository.findById(id)
@@ -101,6 +105,8 @@ public class ProductServiceImpl implements ProductService {
      * @param productDto The ProductDto object representing the updated product.
      * @return The ID of the updated product.
      */
+    @Override
+    @CachePut(value = "products", key = "#id")
     public Long updateProduct(Long id, ProductDto productDto) {
         return null;
     }
@@ -110,11 +116,13 @@ public class ProductServiceImpl implements ProductService {
      *
      * @param productId The ID of the product to delete.
      */
-    public void deleteById(Long productId) {
-        productRepository.deleteById(productId);
+    @Override
+    @CacheEvict(value = "products", key = "#id")
+    public void deleteById(Long id) {
+        productRepository.deleteById(id);
     }
 
-    private Specification<Product> createSpecByFilter(Integer maxPrice, Integer minPrice, String title) {
+    private Specification<Product> createSpecByFilter(Integer maxPrice, Integer minPrice, String name) {
         Specification<Product> specification = Specification.where(null);
 
         if (minPrice != null) {
@@ -123,8 +131,8 @@ public class ProductServiceImpl implements ProductService {
         if (maxPrice != null) {
             specification = specification.and(ProductSpecifications.priceLessOrEqualsThan(maxPrice));
         }
-        if (title != null && !title.trim().isEmpty()) {
-            specification = specification.and(ProductSpecifications.titleLike(title));
+        if (name != null && !name.trim().isEmpty()) {
+            specification = specification.and(ProductSpecifications.nameLike(name));
         }
 
         return specification;

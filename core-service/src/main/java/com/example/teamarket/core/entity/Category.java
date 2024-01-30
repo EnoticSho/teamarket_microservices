@@ -2,6 +2,7 @@ package com.example.teamarket.core.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -35,6 +37,7 @@ public class Category {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> productList;
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<Product> productList = new ArrayList<>();
 }

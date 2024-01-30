@@ -31,10 +31,10 @@ public class ProductSpecifications {
     /**
      * Creates a specification to filter products with a title that contains the given title part.
      *
-     * @param titlePart The partial title to search for within product titles.
+     * @param namePart The partial title to search for within product titles.
      * @return A Specification object for filtering products by title.
      */
-    public static Specification<Product> titleLike(String titlePart) {
-        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), String.format("%%%s%%", titlePart));
+    public static Specification<Product> nameLike(String namePart) {
+        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), String.format("%%%s%%", namePart));
     }
 }

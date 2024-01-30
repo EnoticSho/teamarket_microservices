@@ -12,5 +12,6 @@ public interface ProductService {
     List<InfoProductDto> findAllProducts(Integer maxPrice, Integer minPrice, String title, int page, int count);
     InfoProductDto findById(Long id);
     Long saveProduct(ProductDto productDto);
+    Long updateProduct(Long id, ProductDto productDto);
     void deleteById(Long id);
 }
