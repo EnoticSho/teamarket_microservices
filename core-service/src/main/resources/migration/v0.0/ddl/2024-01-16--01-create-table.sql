@@ -55,9 +55,10 @@ CREATE TABLE Orders
 (
     order_id    SERIAL PRIMARY KEY,
     user_email  VARCHAR(255) NOT NULL,
-    order_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_price DECIMAL(10, 2),
     status      VARCHAR(255) CHECK (status IN ('REGISTERED', 'PAID')),
-    total_price DECIMAL(10, 2)
+    order_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 --changeset sergey:7
@@ -79,7 +80,8 @@ CREATE TABLE Reviews
     Email       VARCHAR(255)                            NOT NULL,
     rating      INT CHECK (rating >= 0 AND rating <= 5) NOT NULL,
     comment     TEXT,
-    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 --changeset sergey:9
@@ -90,5 +92,6 @@ CREATE TABLE Payment
     user_email VARCHAR(255)   NOT NULL,
     total_cost DECIMAL(10, 2) NOT NULL,
     status     VARCHAR(255) CHECK (status IN ('PROCESSING', 'COMPLETED', 'FAILED')),
-    created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
