@@ -2,14 +2,22 @@ package com.example.teamarket.core.controller;
 
 import com.example.teamarket.core.dto.request.ProductDto;
 import com.example.teamarket.core.dto.response.InfoProductDto;
+import com.example.teamarket.core.dto.response.PageResponse;
 import com.example.teamarket.core.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller class for managing products.
@@ -34,7 +42,7 @@ public class ProductController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retrieve all products with filters")
-    public List<InfoProductDto> getAllProducts(
+    public PageResponse<InfoProductDto> getAllProducts(
             @RequestParam(required = false, name = "min_price") Integer minPrice,
             @RequestParam(required = false, name = "max_price") Integer maxPrice,
             @RequestParam(required = false, name = "name") String name,

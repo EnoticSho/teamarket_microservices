@@ -2,6 +2,7 @@ package com.example.teamarket.core.service.impl;
 
 import com.example.teamarket.core.dto.request.ProductDto;
 import com.example.teamarket.core.dto.response.InfoProductDto;
+import com.example.teamarket.core.dto.response.PageResponse;
 import com.example.teamarket.core.dto.response.ReviewInfoDto;
 import com.example.teamarket.core.entity.Category;
 import com.example.teamarket.core.entity.Product;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -49,11 +51,11 @@ public class ProductServiceImpl implements ProductService {
      * @return A list of InfoProductDto objects representing the filtered products.
      */
     @Override
-    public List<InfoProductDto> findAllProducts(Integer maxPrice, Integer minPrice, String name, int page, int count) {
+    public PageResponse<InfoProductDto> findAllProducts(Integer maxPrice, Integer minPrice, String name, int page, int count) {
         Specification<Product> specByFilter = createSpecByFilter(maxPrice, minPrice, name);
-        return productRepository.findAll(specByFilter, PageRequest.of(page, count)).stream()
-                .map(productMapper::productToInfoProductDto)
-                .toList();
+        Page<InfoProductDto> map = productRepository.findAll(specByFilter, PageRequest.of(page, count))
+                .map(productMapper::productToInfoProductDto);
+        return PageResponse.of(map);
     }
 
     /**
@@ -114,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Deletes a product by its ID.
      *
-     * @param productId The ID of the product to delete.
+     * @param id The ID of the product to delete.
      */
     @Override
     @CacheEvict(value = "products", key = "#id")

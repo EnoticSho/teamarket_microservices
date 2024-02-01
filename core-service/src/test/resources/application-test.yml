@@ -5,3 +5,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  liquibase:
+    change-log: classpath:db/db.changelog-master.yml

@@ -12,4 +12,5 @@ include 'notification-service'
 include 'reviews-service'
 include 'config-server'
 include 'payment-service'
+include 'inventory-service'
 
