@@ -56,14 +56,14 @@ public class ProductController {
     }
 
     /**
-     * Retrieves a product by its ID along with its reviews.
+     * Retrieves a product by its ID.
      *
      * @param id The ID of the product to retrieve.
      * @return The {@link InfoProductDto} representing the product with the specified ID.
      */
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Retrieve a product by ID and its reviews")
+    @Operation(summary = "Retrieve a product by ID")
     public InfoProductDto getProductById(@PathVariable("id") Long id) {
         return productService.findById(id);
     }

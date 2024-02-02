@@ -22,7 +22,6 @@ public interface ProductMapper {
     @Mapping(source = "category", target = "category", ignore = true)
     Product toProduct(ProductDto productDto);
 
-    @Mapping(target = "reviewInfoDto", ignore = true)
     @Mapping(source = "imagesLinks", target = "imagesLinks", qualifiedByName = "mapImageLinksToString")
     @Mapping(source = "category", target = "category", qualifiedByName = "mapCategory")
     InfoProductDto productToInfoProductDto(Product product);

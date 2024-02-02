@@ -12,6 +12,11 @@ spring:
       hibernate:
         format_sql: true
         ddl-auto: validate
+  mvc:
+    format:
+      date-time: iso
+      date: iso
+      time: iso
 
 
 jwt:
