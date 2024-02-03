@@ -41,7 +41,7 @@ public class CartServiceImpl implements CartService {
         if (Objects.equals(cart, null)) {
             throw ResourceNotFoundException.of(cartUuid, Cart.class);
         }
-        return cartMapper.modelToDto(cart);
+        return cartMapper.cartToCartDto(cart);
     }
 
     /**

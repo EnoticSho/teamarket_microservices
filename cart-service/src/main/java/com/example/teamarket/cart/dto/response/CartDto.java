@@ -1,10 +1,10 @@
 package com.example.teamarket.cart.dto.response;
 
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 
 
 public record CartDto(
-        Map<Long, CartItemDto> itemsMap,
+        List<CartItemDto> itemsMap,
         BigDecimal totalCost) {
 }

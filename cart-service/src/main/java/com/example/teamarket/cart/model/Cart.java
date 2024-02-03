@@ -15,8 +15,6 @@ import java.util.Map;
 @Component
 @NoArgsConstructor
 public class Cart implements Serializable {
-    private static final BigDecimal HUNDRED = new BigDecimal("100");
-    private static final int SCALE = 2;
 
     private final Map<Long, CartItem> itemsMap = new HashMap<>();
     private BigDecimal totalCost = BigDecimal.ZERO;
