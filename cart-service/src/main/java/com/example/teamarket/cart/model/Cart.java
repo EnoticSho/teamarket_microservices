@@ -1,6 +1,7 @@
 package com.example.teamarket.cart.model;
 
 import com.example.teamarket.cart.dto.response.InfoProductDto;
+import com.example.teamarket.cart.exceptions.ResourceNotFoundException;
 import com.example.teamarket.cart.utils.CartUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,9 @@ public class Cart implements Serializable {
             cartItem.changeQuantity(weight);
             removeItemIfNecessary(id, cartItem);
             recalculateTotalCost();
+        }
+        else {
+            throw ResourceNotFoundException.of(id, CartItem.class);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.teamarket.cart.service.impl;
 
+import com.example.teamarket.cart.dto.request.ProductInfo;
 import com.example.teamarket.cart.dto.response.CartDto;
 import com.example.teamarket.cart.dto.response.InfoProductDto;
 import com.example.teamarket.cart.dto.response.StringResponse;
@@ -44,18 +45,12 @@ public class CartServiceImpl implements CartService {
         return cartMapper.cartToCartDto(cart);
     }
 
-    /**
-     * Adds an item to the cart with the given product ID and weight.
-     *
-     * @param productId The ID of the product to add to the cart.
-     * @param weight    The weight of the product to add to the cart.
-     * @param uuid      The UUID of the cart.
-     */
+
     @Override
-    public void addItemToCart(Long productId, int weight, String uuid) {
-        if (inventoryServiceIntegration.reserveProduct(productId, weight)) {
-            InfoProductDto product = productServiceIntegration.getProductById(productId);
-            execute(uuid, cart -> cart.addItem(product, weight));
+    public void addItemToCart(ProductInfo productInfo, String uuid) {
+        if (inventoryServiceIntegration.reserveProduct(productInfo.id(), productInfo.weight())) {
+            InfoProductDto product = productServiceIntegration.getProductById(productInfo.id());
+            execute(uuid, cart -> cart.addItem(product, productInfo.weight()));
         }
     }
 
@@ -92,23 +87,16 @@ public class CartServiceImpl implements CartService {
         return new StringResponse(cartUuid);
     }
 
-    /**
-     * Edits the quantity of an item in the cart.
-     *
-     * @param cartId The UUID of the cart.
-     * @param id     The ID of the item to edit.
-     * @param weight The new weight of the item.
-     */
     @Override
-    public void editItem(String cartId, Long id, int weight) {
-        if (weight > 0) {
-            if (inventoryServiceIntegration.reserveProduct(id, weight)) {
-                execute(cartId, cart -> cart.editCartItem(id, weight));
+    public void editItem(String cartId, Long id, ProductInfo productInfo) {
+        if (productInfo.weight() > 0) {
+            if (inventoryServiceIntegration.reserveProduct(id, productInfo.weight())) {
+                execute(cartId, cart -> cart.editCartItem(id, productInfo.weight()));
             }
         }
         else {
-            execute(cartId, cart -> cart.editCartItem(id, weight));
-            inventoryServiceIntegration.returnProduct(id, weight);
+            execute(cartId, cart -> cart.editCartItem(id, productInfo.weight()));
+            inventoryServiceIntegration.returnProduct(id, productInfo.weight());
         }
     }
 
