@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -34,7 +35,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Products")
-@NamedEntityGraph(name)
+@NamedEntityGraph(name = "Product.imagesLinks",
+        attributeNodes = @NamedAttributeNode("imagesLinks"))
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
 
@@ -70,7 +72,8 @@ public class Product {
             mappedBy = "product")
     private List<ProductImageEntity> imagesLinks = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
 }

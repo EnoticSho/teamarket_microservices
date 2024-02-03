@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @param cartId  The cart identifier.
      * @return A JwtAuthenticationResponse containing JWT access and refresh tokens.
      */
-    public JwtAuthenticationResponse signIn(SignInRequest request, String cartId) {
+    public JwtAuthenticationResponse signIn(@Valid SignInRequest request, String cartId) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.email(),
                 request.password()
