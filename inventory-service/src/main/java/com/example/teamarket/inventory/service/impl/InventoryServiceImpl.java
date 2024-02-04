@@ -20,9 +20,10 @@ public class InventoryServiceImpl implements InventoryService {
     public boolean reserveProduct(Long productId, int quantity) {
         Product product = checkAvailability(productId);
         if (quantity > product.getStockQuantity()) {
+            System.out.println(1);
             throw ResourceEndedInStock.of(product);
         }
-
+        System.out.println(2);
         product.setStockQuantity(product.getStockQuantity() - quantity);
         inventoryRepository.save(product);
 

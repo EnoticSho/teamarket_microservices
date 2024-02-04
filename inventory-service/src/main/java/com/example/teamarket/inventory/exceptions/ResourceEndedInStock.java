@@ -7,7 +7,7 @@ public class ResourceEndedInStock extends RuntimeException{
     }
 
     public static ResourceEndedInStock of(Object object) {
-        String message = Object.class.getSimpleName() + " : this quantity is not in stock";
+        String message = object.getClass().getSimpleName() + " : this quantity is not in stock";
         return new ResourceEndedInStock(message);
     }
 }

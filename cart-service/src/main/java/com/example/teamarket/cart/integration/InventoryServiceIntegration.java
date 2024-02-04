@@ -1,5 +1,7 @@
 package com.example.teamarket.cart.integration;
 
+import com.example.teamarket.cart.dto.request.ProductInfo;
+import com.example.teamarket.cart.exceptions.ResourceEndedInStock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,10 @@ public class InventoryServiceIntegration {
         return integrationServiceWebClient.patch()
                 .uri("/v1/api/inventory/reserve/" + productId + "/" + quantity)
                 .retrieve()
+                .onStatus(
+                        httpStatus -> httpStatus.value() == HttpStatus.BAD_REQUEST.value(),
+                        clientResponse -> Mono.error(ResourceEndedInStock.of(ProductInfo.class))
+                )
                 .onStatus(
                         httpStatus -> httpStatus.value() == HttpStatus.NOT_FOUND.value(),
                         clientResponse -> Mono.error(new RuntimeException("Не удалось проверить наличие продукта"))
