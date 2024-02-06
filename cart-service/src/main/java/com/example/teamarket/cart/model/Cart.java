@@ -1,6 +1,7 @@
 package com.example.teamarket.cart.model;
 
 import com.example.teamarket.cart.dto.response.InfoProductDto;
+import com.example.teamarket.cart.exceptions.IncorrectProductWeight;
 import com.example.teamarket.cart.exceptions.ResourceNotFoundException;
 import com.example.teamarket.cart.utils.CartUtils;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class Cart implements Serializable {
                     .weight(weight)
                     .costByHundredGrams(infoProductDto.price())
                     .sum(CartUtils.calculateAmount(infoProductDto.price(), weight))
+                    .imagesLink(infoProductDto.imagesLinks().get(0))
                     .build();
             itemsMap.put(infoProductDto.productId(), build);
         }
@@ -41,19 +43,29 @@ public class Cart implements Serializable {
     public void editCartItem(Long id, int weight) {
         CartItem cartItem = itemsMap.get(id);
         if (cartItem != null) {
-            cartItem.changeQuantity(weight);
-            removeItemIfNecessary(id, cartItem);
-            recalculateTotalCost();
+            if (cartItem.getWeight() >= Math.abs(weight)) {
+                cartItem.changeQuantity(weight);
+                removeItemIfNecessary(id, cartItem);
+                recalculateTotalCost();
+            }
+            else {
+                throw IncorrectProductWeight.of(cartItem.getId(), cartItem.getWeight(), weight);
+            }
         }
         else {
             throw ResourceNotFoundException.of(id, CartItem.class);
         }
     }
 
-    public void removeItemById(Long id) {
-        if (itemsMap.remove(id) != null) {
+    public Integer removeItemById(Long id) {
+        CartItem remove = itemsMap.remove(id);
+        if (remove != null) {
             recalculateTotalCost();
         }
+        else {
+            throw ResourceNotFoundException.of(id, CartItem.class);
+        }
+        return remove.getWeight();
     }
 
     public void removeAllItems() {

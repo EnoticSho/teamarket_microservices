@@ -22,45 +22,52 @@ spring:
         - id: core-service-admin
           uri: lb://core-service/
           predicates:
-            - Path=/products
+            - Path=/core-service/products
             - Method=POST
           filters:
+            - StripPrefix=1
             - PrefixPath=/core/v1/api
             - TokenAuthenticationFilter
         - id: core-service
           uri: lb://core-service/
           predicates:
-            - Path=/products/**
+            - Path=/core-service/products/**
           filters:
+            - StripPrefix=1
             - PrefixPath=/core/v1/api
         - id: core-service-swagger
           uri: lb://core-service/
           predicates:
-            - Path=/core/**
+            - Path=/core-service/**
+          filters:
+            - StripPrefix=1
+            - PrefixPath=/core
         - id: cart-service-specific-path
           uri: lb://cart-service/
           predicates:
-            - Path=/cart/generate_uuid
+            - Path=/cart-service/cart/generate_uuid
           filters:
+            - StripPrefix=1
             - PrefixPath=/cart/v1/api
         - id: cart-service-general
           uri: lb://cart-service/
           predicates:
-            - Path=/cart/**
+            - Path=/cart-service/cart/**
           filters:
+            - StripPrefix=1
             - PrefixPath=/cart/v1/api
             - CartFilter
         - id: cart-service-swagger
           uri: lb://cart-service/
           predicates:
-            - Path=/basket/**
+            - Path=/cart-service/**
           filters:
             - StripPrefix=1
             - PrefixPath=/cart
         - id: auth-service
           uri: lb://auth-service/
           predicates:
-            - Path=/auth/**
+            - Path=/auth-service/**
           filters:
             - StripPrefix=1
             - PrefixPath=/auth/v1/api

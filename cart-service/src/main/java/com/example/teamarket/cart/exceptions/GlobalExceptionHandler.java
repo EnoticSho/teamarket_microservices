@@ -38,5 +38,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IncorrectProductWeight.class)
+    public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(IncorrectProductWeight ex) {
+        ApiErrorResponse response = new ApiErrorResponse();
+
+        response.setErrorMessage(ex.getMessage());
+        response.setErrorCode(HttpStatus.BAD_REQUEST.value());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
 

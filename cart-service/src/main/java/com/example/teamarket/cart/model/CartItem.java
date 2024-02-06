@@ -21,6 +21,7 @@ public class CartItem implements Serializable {
     private Integer weight;
     private BigDecimal costByHundredGrams;
     private BigDecimal sum;
+    private String imagesLink;
 
     public void changeQuantity(int weight) {
         this.weight += weight;

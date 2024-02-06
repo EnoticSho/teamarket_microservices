@@ -26,48 +26,27 @@ public class AuthController {
 
     private final AuthenticationService authenticationService;
 
-    /**
-     * Registers a new user and returns a JWT for authentication.
-     *
-     * @param cartId  The cart identifier passed in the request header, representing the user's cart.
-     * @param request The request object containing the user's registration data.
-     * @return A {@link JwtAuthenticationResponse} object containing the JWT token and authentication information.
-     */
+
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Register user and issue token", description = "Registers a new user and issues a JWT token for subsequent authentication.")
-    public JwtAuthenticationResponse signUp(@RequestHeader("cart_id") String cartId,
-                                            @RequestBody SignUpRequest request) {
+    public JwtAuthenticationResponse signUp(@RequestBody SignUpRequest request) {
         return authenticationService.signUp(request, cartId);
     }
 
-    /**
-     * Authenticates a user and returns a JWT for access.
-     *
-     * @param cartId  The cart identifier passed in the request header.
-     * @param request The request object containing the user's login credentials.
-     * @return A {@link JwtAuthenticationResponse} object containing the JWT token and authentication information.
-     */
+
     @PostMapping("/sign-in")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Authenticate user and issue token", description = "Authenticates a user based on credentials and issues a JWT token for access.")
-    public JwtAuthenticationResponse signIn(@RequestHeader("cart_id") String cartId,
-                                            @RequestBody SignInRequest request) {
+    public JwtAuthenticationResponse signIn(@RequestBody SignInRequest request) {
         return authenticationService.signIn(request, cartId);
     }
 
-    /**
-     * Refreshes the user's access token.
-     *
-     * @param cartId       The cart identifier passed in the request header.
-     * @param refreshToken The refresh token used to obtain a new access token.
-     * @return A refreshed {@link JwtAuthenticationResponse} object containing a new JWT access token.
-     */
+
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Refresh access token", description = "Refreshes the access token using the provided refresh token.")
-    public JwtAuthenticationResponse refreshAccessToken(@RequestHeader("cart_id") String cartId,
-                                                        @RequestParam String refreshToken) {
+    public JwtAuthenticationResponse refreshAccessToken(@RequestParam String refreshToken) {
         return authenticationService.refreshAccessToken(refreshToken, cartId);
     }
 }

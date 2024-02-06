@@ -7,5 +7,6 @@ public record CartItemDto(
         String name,
         Integer weight,
         BigDecimal costByHundredGrams,
-        BigDecimal sum) {
+        BigDecimal sum,
+        String imagesLink) {
 }

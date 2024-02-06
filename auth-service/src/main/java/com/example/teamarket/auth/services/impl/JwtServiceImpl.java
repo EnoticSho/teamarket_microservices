@@ -40,13 +40,12 @@ public class JwtServiceImpl implements JwtService {
      * @param cartId      The cart identifier.
      * @return A JWT access token.
      */
-    public String generateToken(UserDetails userDetails, String cartId) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roleList = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         claims.put("roles", roleList);
-        claims.put("cartId", cartId);
 
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + expiration);

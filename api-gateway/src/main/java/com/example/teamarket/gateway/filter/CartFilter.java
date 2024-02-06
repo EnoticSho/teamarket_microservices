@@ -51,9 +51,9 @@ public class CartFilter extends AbstractGatewayFilterFactory<CartFilter.Config> 
                         return onError(exchange, "Access token expired");
                     }
 
-                    String cartId = jwtUtil.getAllClaimsFromToken(token.get()).get("cartId", String.class);
+                    String email = jwtUtil.getAllClaimsFromToken(token.get()).getSubject();
                     return chain.filter(exchange.mutate().request(request.mutate()
-                            .header("cart_id", cartId)
+                            .header("cart_id", email)
                             .build()).build());
                 } catch (JwtException e) {
                     return onError(exchange, "Invalid token");

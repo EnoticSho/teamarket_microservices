@@ -46,7 +46,7 @@ public class CartServiceImpl implements CartService {
     public CartDto getCurrentCart(String cartUuid) {
         log.info("Fetching current cart with UUID: {}", cartUuid);
         Cart cart = (Cart) redisTemplate.opsForValue().get(cartUuid);
-        if (Objects.equals(cart, null)) {
+        if (cart == null) {
             throw ResourceNotFoundException.of(cartUuid, Cart.class);
         }
         return cartMapper.cartToCartDto(cart);
@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
      * and then adds it to the cart if the reservation is successful.
      *
      * @param productInfo The product information including ID and weight.
-     * @param uuid The UUID of the cart to which the item is added.
+     * @param uuid        The UUID of the cart to which the item is added.
      */
     @Override
     public void addItemToCart(ProductInfo productInfo, String uuid) {
@@ -77,7 +77,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public void removeItemFromCart(Long id, String uuid) {
         log.info("Removing item with ID: {} from cart: {}", id, uuid);
-        execute(uuid, cart -> cart.removeItemById(id));
+        execute(uuid, cart -> {
+            Integer weight = cart.removeItemById(id);
+            if (weight > 0) {
+                inventoryServiceIntegration.returnProduct(id, weight);
+            }
+        });
     }
 
     /**
@@ -98,9 +103,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public StringResponse generateUuid() {
-        log.info("Generating new cart UUID and initializing in Redis");
+        log.info("Generating new cart UUID");
         String cartUuid = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(cartUuid, new Cart());
         return new StringResponse(cartUuid);
     }
 
@@ -108,8 +112,8 @@ public class CartServiceImpl implements CartService {
      * Edits an item in the cart, either by updating its quantity or removing it if the quantity is reduced to zero.
      * Reserves or returns the product to inventory as needed.
      *
-     * @param cartId The UUID of the cart where the item is edited.
-     * @param id The ID of the item to edit.
+     * @param cartId      The UUID of the cart where the item is edited.
+     * @param id          The ID of the item to edit.
      * @param productInfo New product information including the updated weight.
      */
     @Override
@@ -129,6 +133,9 @@ public class CartServiceImpl implements CartService {
 
     private void execute(String cartUuid, Consumer<Cart> operation) {
         log.info("Executing operation on cart: {}", cartUuid);
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(cartUuid))) {
+            redisTemplate.opsForValue().set(cartUuid, new Cart());
+        }
         Cart cart = (Cart) redisTemplate.opsForValue().get(cartUuid);
         operation.accept(cart);
         redisTemplate.opsForValue().set(cartUuid, Objects.requireNonNull(cart));

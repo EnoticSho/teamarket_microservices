@@ -5,7 +5,8 @@ spring:
 ---
 
 spring:
-  activate:
+  config:
+    activate:
       on-profile: dev
   cloud:
     config:
