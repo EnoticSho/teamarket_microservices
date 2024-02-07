@@ -9,6 +9,7 @@ public interface CartService {
     void addItemToCart(ProductInfo productInfo, String cartId);
     void removeItemFromCart(Long productId, String cartId);
     void clear(String cartId);
-    StringResponse generateUuid();
     void editItem(String cartId, Long id, ProductInfo productInfo);
+    void mergeCartWithUser(String cartUuid, String email);
+    StringResponse generateUuid();
 }

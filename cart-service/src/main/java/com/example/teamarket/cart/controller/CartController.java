@@ -83,9 +83,21 @@ public class CartController {
     @PutMapping("/items/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Edit item in cart", description = "Edits the quantity of a specific item in a shopping cart based on its ID and the cart's UUID.")
-    public void editCartItem(@RequestHeader(name = "cart_id") String cartId,
-                             @PathVariable Long id,
-                             @RequestBody ProductInfo productInfo) {
+    public ResponseEntity<?> editCartItem(@RequestHeader(name = "cart_id") String cartId,
+                                          @PathVariable Long id,
+                                          @RequestBody ProductInfo productInfo) {
         cartService.editItem(cartId, id, productInfo);
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @PostMapping("/mergeCart")
+    public ResponseEntity<?> associateCartWithUser(@RequestHeader("cart_id") String cartUuid,
+                                                   @RequestHeader("email") String email) {
+        cartService.mergeCartWithUser(cartUuid, email);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 }

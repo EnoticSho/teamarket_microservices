@@ -7,7 +7,7 @@ public class IncorrectProductWeight extends RuntimeException {
     }
 
     public static IncorrectProductWeight of(Long productId, Integer cartWeight, Integer requestWeight) {
-        String message = "Weight of product with id: " + productId + " in cart: " + cartWeight + "but request weight: " + requestWeight;
+        String message = "Weight of product with id: " + productId + " in cart: " + cartWeight + " but request weight: " + requestWeight;
         return new IncorrectProductWeight(message);
     }
 }

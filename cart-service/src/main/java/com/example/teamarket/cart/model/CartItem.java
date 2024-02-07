@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CartItem implements Serializable {
     private Long id;
     private String name;
