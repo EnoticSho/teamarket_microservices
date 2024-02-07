@@ -30,7 +30,8 @@ public class AuthController {
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Register user and issue token", description = "Registers a new user and issues a JWT token for subsequent authentication.")
-    public JwtAuthenticationResponse signUp(@RequestBody SignUpRequest request) {
+    public JwtAuthenticationResponse signUp(@RequestBody SignUpRequest request,
+                                            @RequestHeader("cart_id") String cartId) {
         return authenticationService.signUp(request, cartId);
     }
 
@@ -38,7 +39,8 @@ public class AuthController {
     @PostMapping("/sign-in")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Authenticate user and issue token", description = "Authenticates a user based on credentials and issues a JWT token for access.")
-    public JwtAuthenticationResponse signIn(@RequestBody SignInRequest request) {
+    public JwtAuthenticationResponse signIn(@RequestBody SignInRequest request,
+                                            @RequestHeader("cart_id") String cartId) {
         return authenticationService.signIn(request, cartId);
     }
 
@@ -47,6 +49,6 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Refresh access token", description = "Refreshes the access token using the provided refresh token.")
     public JwtAuthenticationResponse refreshAccessToken(@RequestParam String refreshToken) {
-        return authenticationService.refreshAccessToken(refreshToken, cartId);
+        return authenticationService.refreshAccessToken(refreshToken);
     }
 }

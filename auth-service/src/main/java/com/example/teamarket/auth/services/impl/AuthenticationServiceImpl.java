@@ -5,6 +5,7 @@ import com.example.teamarket.auth.dto.request.SignUpRequest;
 import com.example.teamarket.auth.dto.response.JwtAuthenticationResponse;
 import com.example.teamarket.auth.entities.Role;
 import com.example.teamarket.auth.entities.User;
+import com.example.teamarket.auth.integrations.CartServiceIntegration;
 import com.example.teamarket.auth.mapper.UserMapper;
 import com.example.teamarket.auth.services.AuthenticationService;
 import com.example.teamarket.auth.services.JwtService;
@@ -25,19 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final UserService userService;
+    private final CartServiceIntegration cartServiceIntegration;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final JwtService jwtService;
     private final UserMapper userMapper;
 
-    /**
-     * Registers a new user and returns JWT tokens for authentication.
-     *
-     * @param request The request object containing user registration data.
-     * @param cartId  The cart identifier.
-     * @return A JwtAuthenticationResponse containing JWT access and refresh tokens.
-     */
+
     @Transactional
     public JwtAuthenticationResponse signUp(@Valid SignUpRequest request, String cartId) {
         User user = userMapper.toUser(request);
@@ -47,19 +43,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userService.save(user);
 
-        String accessJwt = jwtService.generateToken(user, cartId);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        cartServiceIntegration.mergeCarts(cartId, user.getEmail())
+                .subscribe();
 
+        String accessJwt = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
         return new JwtAuthenticationResponse(accessJwt, refreshToken);
     }
 
-    /**
-     * Authenticates a user and returns JWT tokens for access.
-     *
-     * @param request The request object containing user login credentials.
-     * @param cartId  The cart identifier.
-     * @return A JwtAuthenticationResponse containing JWT access and refresh tokens.
-     */
+
     public JwtAuthenticationResponse signIn(@Valid SignInRequest request, String cartId) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.email(),
@@ -70,30 +62,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .userDetailsService()
                 .loadUserByUsername(request.email());
 
-        String accessJwt = jwtService.generateToken(userDetails, cartId);
+        cartServiceIntegration.mergeCarts(cartId, request.email())
+                .subscribe();
+
+        String accessJwt = jwtService.generateToken(userDetails);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
 
         return new JwtAuthenticationResponse(accessJwt, refreshToken);
     }
 
-    /**
-     * Refreshes the user's access token using a refresh token.
-     *
-     * @param refreshToken The refresh token.
-     * @param cartId       The cart identifier.
-     * @return A JwtAuthenticationResponse containing a new JWT access token and the same refresh token.
-     * @throws RuntimeException if the refresh token is invalid or the associated email is not found.
-     */
-    public JwtAuthenticationResponse refreshAccessToken(String refreshToken, String cartId) {
+
+    public JwtAuthenticationResponse refreshAccessToken(String refreshToken) {
         String emailFromToken = jwtService.getEmailFromToken(refreshToken);
         if (jwtService.isInvalid(refreshToken) || emailFromToken == null) {
             throw new RuntimeException();
         }
 
-        UserDetails userDetails = userService.userDetailsService().loadUserByUsername(emailFromToken);
-
-        String newAccessToken = jwtService.generateToken(userDetails, cartId);
-
+        UserDetails userDetails = userService.userDetailsService()
+                .loadUserByUsername(emailFromToken);
+        String newAccessToken = jwtService.generateToken(userDetails);
         return new JwtAuthenticationResponse(newAccessToken, refreshToken);
     }
 }

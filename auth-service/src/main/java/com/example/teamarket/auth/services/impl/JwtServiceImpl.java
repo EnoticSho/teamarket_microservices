@@ -33,13 +33,7 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.refreshExpiration}")
     private Long refreshExpiration;
 
-    /**
-     * Generates a JWT access token based on user details and cart ID.
-     *
-     * @param userDetails The UserDetails object representing the authenticated user.
-     * @param cartId      The cart identifier.
-     * @return A JWT access token.
-     */
+
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roleList = userDetails.getAuthorities().stream()
@@ -58,12 +52,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    /**
-     * Generates a JWT refresh token based on user details.
-     *
-     * @param userDetails The UserDetails object representing the authenticated user.
-     * @return A JWT refresh token.
-     */
+
     public String generateRefreshToken(UserDetails userDetails) {
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + refreshExpiration);

@@ -8,5 +8,5 @@ public interface AuthenticationService {
 
     JwtAuthenticationResponse signUp(SignUpRequest request, String cartId);
     JwtAuthenticationResponse signIn(SignInRequest request, String cartId);
-    JwtAuthenticationResponse refreshAccessToken(String refreshToken, String cartId);
+    JwtAuthenticationResponse refreshAccessToken(String refreshToken);
 }

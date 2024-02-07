@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -130,7 +129,16 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void mergeCartWithUser(String cartUuid, String email) {
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(email))) {
+            redisTemplate.opsForValue().set(email, new Cart());
+        }
         Cart cartFromRedis = getCartFromRedis(cartUuid);
+        if (!cartFromRedis.getItemsMap().isEmpty()) {
+            Cart userCart = (Cart) redisTemplate.opsForValue().get(email);
+            Cart merge = userCart.merge(cartFromRedis);
+            redisTemplate.opsForValue().set(email, merge);
+            cartFromRedis.removeAllItems();
+        }
     }
 
     /**
@@ -140,12 +148,9 @@ public class CartServiceImpl implements CartService {
      */
     private void execute(String cartUuid, Consumer<Cart> operation) {
         log.info("Executing operation on cart: {}", cartUuid);
-        if (Boolean.FALSE.equals(redisTemplate.hasKey(cartUuid))) {
-            redisTemplate.opsForValue().set(cartUuid, new Cart());
-        }
-        Cart cart = (Cart) redisTemplate.opsForValue().get(cartUuid);
+        Cart cart = getCartFromRedis(cartUuid);
         operation.accept(cart);
-        redisTemplate.opsForValue().set(cartUuid, Objects.requireNonNull(cart));
+        redisTemplate.opsForValue().set(cartUuid, cart);
     }
 
     private Cart getCartFromRedis(String cartUuid) {

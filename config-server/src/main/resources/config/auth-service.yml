@@ -35,6 +35,13 @@ spring:
     username: root
     url: jdbc:postgresql://localhost:5432/database
 
+integrations:
+  cart-service:
+    url: http://localhost:8090/cart/v1/api
+    read-timeout: 10000
+    write-timeout: 5000
+    connect-timeout: 5000
+
 eureka:
   client:
     serviceUrl:
@@ -59,6 +66,13 @@ spring:
     password: root
     username: root
     url: jdbc:postgresql://postgres:5432/database
+
+integrations:
+  cart-service:
+    url: http://cart-service:8090/cart/v1/api
+    read-timeout: 10000
+    write-timeout: 5000
+    connect-timeout: 5000
 
 eureka:
   client:

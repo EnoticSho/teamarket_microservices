@@ -33,7 +33,7 @@ public class Cart implements Serializable {
      * an item, the total cost of the cart is recalculated.
      *
      * @param infoProductDto the product information Data Transfer Object (DTO) containing details like product ID, name, price, and image links.
-     * @param weight the quantity of the product to be added to the cart, measured in weight units.
+     * @param weight         the quantity of the product to be added to the cart, measured in weight units.
      */
     public void addItem(InfoProductDto infoProductDto, int weight) {
         CartItem cartItem = itemsMap.get(infoProductDto.productId());
@@ -60,10 +60,10 @@ public class Cart implements Serializable {
      * quantity is invalid (e.g., less than zero), an {@link IncorrectProductWeight} exception is thrown.
      * The cart's total cost is recalculated after the item is edited.
      *
-     * @param id the product ID of the cart item to be edited.
+     * @param id     the product ID of the cart item to be edited.
      * @param weight the amount by which the item's quantity is to be adjusted. Can be negative for a decrease.
      * @throws ResourceNotFoundException if the item with the specified ID does not exist in the cart.
-     * @throws IncorrectProductWeight if the resulting quantity after adjustment is invalid.
+     * @throws IncorrectProductWeight    if the resulting quantity after adjustment is invalid.
      */
     public void editCartItem(Long id, int weight) {
         CartItem cartItem = itemsMap.get(id);
@@ -112,6 +112,16 @@ public class Cart implements Serializable {
         return removedItemsWeights;
     }
 
+    public Cart merge(Cart mergeCart) {
+        mergeCart.getItemsMap().forEach((key, value) -> {
+            if (!this.itemsMap.containsKey(key)) {
+                this.itemsMap.put(key, value);
+            }
+        });
+        this.recalculateTotalCost();
+        return this;
+    }
+
     /**
      * Recalculates the total cost of the cart based on the sum of the costs of all items in the cart.
      * This method is called internally after any operation that modifies the contents of the cart.
@@ -127,4 +137,5 @@ public class Cart implements Serializable {
             itemsMap.remove(id);
         }
     }
+
 }

@@ -59,7 +59,6 @@ public class CartController {
     }
 
     @DeleteMapping("/items")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Clear cart by UUID", description = "Clears the contents of a shopping cart based on its UUID.")
     public ResponseEntity<?> deleteCart(@RequestHeader(name = "cart_id") String cartId) {
         cartService.clear(cartId);
@@ -70,7 +69,6 @@ public class CartController {
 
 
     @DeleteMapping("/items/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Remove item from cart", description = "Removes a specific item from a shopping cart based on its ID and the cart's UUID.")
     public ResponseEntity<?> deleteCartItem(@RequestHeader(name = "cart_id") String cartId,
                                             @PathVariable("id") Long id) {
@@ -81,7 +79,6 @@ public class CartController {
     }
 
     @PutMapping("/items/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Edit item in cart", description = "Edits the quantity of a specific item in a shopping cart based on its ID and the cart's UUID.")
     public ResponseEntity<?> editCartItem(@RequestHeader(name = "cart_id") String cartId,
                                           @PathVariable Long id,
