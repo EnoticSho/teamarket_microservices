@@ -58,6 +58,7 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
 
         order.setItemList(orderItems);
+
         Order savedOrder = orderRepository.save(order);
         kafkaService.sendNotification(orderMapper.entityToInfoDto(savedOrder));
         return savedOrder.getOrderId();

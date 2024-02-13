@@ -52,22 +52,26 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Adds a product to a cart. Reserves the product in the inventory service before adding.
+     *
      * @param productInfo contains the product ID and weight to be added.
-     * @param uuid the UUID of the cart to which the product will be added.
+     * @param uuid        the UUID of the cart to which the product will be added.
      */
     @Override
     @Transactional
     public void addItemToCart(ProductInfo productInfo, String uuid) {
         log.info("Attempting to add item to cart: {} with product ID: {}", uuid, productInfo.id());
         InfoProductDto product = productServiceIntegration.getProductById(productInfo.id());
-        if (inventoryServiceIntegration.reserveProduct(productInfo.id(), productInfo.weight())) {
-            execute(uuid, cart -> cart.addItem(product, productInfo.weight()));
-        }
+        execute(uuid, cart -> {
+            if (inventoryServiceIntegration.reserveProduct(productInfo.id(), productInfo.weight())) {
+                cart.addItem(product, productInfo.weight());
+            }
+        });
     }
 
     /**
      * Removes an item from the cart based on product ID and returns the product to inventory.
-     * @param id the ID of the product to remove from the cart.
+     *
+     * @param id   the ID of the product to remove from the cart.
      * @param uuid the UUID of the cart from which the item will be removed.
      */
     @Override
@@ -82,6 +86,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Clears all items from a cart and returns all products to inventory.
+     *
      * @param uuid the UUID of the cart to be cleared.
      */
     @Override
@@ -96,6 +101,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Generates a new UUID for a cart and initializes an empty cart in Redis.
+     *
      * @return a response containing the generated UUID.
      */
     @Override
@@ -109,8 +115,9 @@ public class CartServiceImpl implements CartService {
     /**
      * Edits the weight of a product in a cart. If the weight is positive, it attempts to reserve the product
      * in inventory. If the weight adjustment is negative, it returns the product to inventory.
-     * @param cartId the UUID of the cart where the item is edited.
-     * @param id the ID of the product to edit.
+     *
+     * @param cartId      the UUID of the cart where the item is edited.
+     * @param id          the ID of the product to edit.
      * @param productInfo contains the new product information including the updated weight.
      */
     @Override
@@ -121,7 +128,8 @@ public class CartServiceImpl implements CartService {
             cart.editCartItem(id, productInfo.weight());
             if (productInfo.weight() < 0) {
                 inventoryServiceIntegration.returnProduct(id, productInfo.weight());
-            } else {
+            }
+            else {
                 inventoryServiceIntegration.reserveProduct(id, productInfo.weight());
             }
         });
@@ -137,13 +145,14 @@ public class CartServiceImpl implements CartService {
             Cart userCart = (Cart) redisTemplate.opsForValue().get(email);
             Cart merge = userCart.merge(cartFromRedis);
             redisTemplate.opsForValue().set(email, merge);
-            cartFromRedis.removeAllItems();
+            redisTemplate.delete(cartUuid);
         }
     }
 
     /**
      * Executes a given operation on the cart identified by UUID. Initializes a new cart in Redis if not present.
-     * @param cartUuid the UUID of the cart on which the operation is to be executed.
+     *
+     * @param cartUuid  the UUID of the cart on which the operation is to be executed.
      * @param operation the operation to be performed on the cart.
      */
     private void execute(String cartUuid, Consumer<Cart> operation) {

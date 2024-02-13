@@ -31,7 +31,7 @@ public class CartController {
     /**
      * Generates a UUID for a new shopping cart.
      *
-     * @return A StringResponse containing the generated UUID.
+     * @return ResponseEntity containing the generated UUID.
      */
     @GetMapping("/generate_uuid")
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,6 +41,13 @@ public class CartController {
                 .ok(cartService.generateUuid());
     }
 
+    /**
+     * Adds a specific item to a shopping cart based on its ID and the cart's UUID.
+     *
+     * @param cartId      The UUID of the shopping cart.
+     * @param productInfo Information about the product to be added to the cart.
+     * @return ResponseEntity indicating the success of the operation.
+     */
     @PostMapping("/items")
     @Operation(summary = "Add item to cart", description = "Adds a specific item to a shopping cart based on its ID and the cart's UUID.")
     public ResponseEntity<?> addItemToCart(@RequestHeader(name = "cart_id") String cartId,
@@ -51,6 +58,12 @@ public class CartController {
                 .build();
     }
 
+    /**
+     * Retrieves the contents of a shopping cart based on its UUID.
+     *
+     * @param cartId The UUID of the shopping cart.
+     * @return ResponseEntity containing the cart's contents.
+     */
     @GetMapping
     @Operation(summary = "Get cart by UUID", description = "Retrieves the contents of a shopping cart based on its UUID.")
     public ResponseEntity<CartDto> getCart(@RequestHeader(name = "cart_id") String cartId) {
@@ -58,6 +71,12 @@ public class CartController {
                 .ok(cartService.getCurrentCart(cartId));
     }
 
+    /**
+     * Clears the contents of a shopping cart based on its UUID.
+     *
+     * @param cartId The UUID of the shopping cart.
+     * @return ResponseEntity indicating the success of the operation.
+     */
     @DeleteMapping("/items")
     @Operation(summary = "Clear cart by UUID", description = "Clears the contents of a shopping cart based on its UUID.")
     public ResponseEntity<?> deleteCart(@RequestHeader(name = "cart_id") String cartId) {
@@ -67,7 +86,13 @@ public class CartController {
                 .build();
     }
 
-
+    /**
+     * Removes a specific item from a shopping cart based on its ID and the cart's UUID.
+     *
+     * @param cartId The UUID of the shopping cart.
+     * @param id     The ID of the item to be removed from the cart.
+     * @return ResponseEntity indicating the success of the operation.
+     */
     @DeleteMapping("/items/{id}")
     @Operation(summary = "Remove item from cart", description = "Removes a specific item from a shopping cart based on its ID and the cart's UUID.")
     public ResponseEntity<?> deleteCartItem(@RequestHeader(name = "cart_id") String cartId,
@@ -78,6 +103,14 @@ public class CartController {
                 .build();
     }
 
+    /**
+     * Edits the quantity of a specific item in a shopping cart based on its ID and the cart's UUID.
+     *
+     * @param cartId      The UUID of the shopping cart.
+     * @param id          The ID of the item to be edited.
+     * @param productInfo Information about the product with the updated quantity.
+     * @return ResponseEntity indicating the success of the operation.
+     */
     @PutMapping("/items/{id}")
     @Operation(summary = "Edit item in cart", description = "Edits the quantity of a specific item in a shopping cart based on its ID and the cart's UUID.")
     public ResponseEntity<?> editCartItem(@RequestHeader(name = "cart_id") String cartId,
@@ -89,6 +122,13 @@ public class CartController {
                 .build();
     }
 
+    /**
+     * Associates a cart with a user by merging cart data with the user's existing cart.
+     *
+     * @param cartUuid The UUID of the cart to be associated with the user.
+     * @param email    The email address of the user.
+     * @return ResponseEntity indicating the success of the operation.
+     */
     @PostMapping("/mergeCart")
     public ResponseEntity<?> associateCartWithUser(@RequestHeader("cart_id") String cartUuid,
                                                    @RequestHeader("email") String email) {
