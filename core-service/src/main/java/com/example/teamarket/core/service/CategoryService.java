@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface CategoryService {
     List<InfoCategoryDto> findAllCategory();
-    InfoCategoryDto findById(Long id);
+    InfoCategoryDto findByName(String title);
 }

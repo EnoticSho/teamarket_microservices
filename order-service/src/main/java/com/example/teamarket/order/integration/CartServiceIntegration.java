@@ -2,7 +2,7 @@ package com.example.teamarket.order.integration;
 
 import com.example.teamarket.order.dto.response.cart.CartDto;
 import com.example.teamarket.order.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,10 +12,10 @@ import reactor.core.publisher.Mono;
  * Integration service for communicating with the Cart service.
  */
 @Component
-@RequiredArgsConstructor
 public class CartServiceIntegration {
 
-    private final WebClient cartServiceWebClient;
+    @Qualifier("cartServiceWebClient")
+    private WebClient cartServiceWebClient;
 
 
     /**

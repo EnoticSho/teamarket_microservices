@@ -3,16 +3,20 @@ package com.example.teamarket.cart.integration;
 import com.example.teamarket.cart.dto.request.ProductInfo;
 import com.example.teamarket.cart.exceptions.ResourceEndedInStock;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 public class InventoryServiceIntegration {
 
     private final WebClient integrationServiceWebClient;
+
+    public InventoryServiceIntegration(@Qualifier("integrationServiceWebClient") WebClient integrationServiceWebClient) {
+        this.integrationServiceWebClient = integrationServiceWebClient;
+    }
 
     public Boolean reserveProduct(Long productId, int quantity) {
         return integrationServiceWebClient.patch()

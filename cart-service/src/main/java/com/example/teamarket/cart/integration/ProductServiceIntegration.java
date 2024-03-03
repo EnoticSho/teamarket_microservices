@@ -3,6 +3,7 @@ package com.example.teamarket.cart.integration;
 import com.example.teamarket.cart.dto.response.InfoProductDto;
 import com.example.teamarket.cart.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,10 +13,13 @@ import reactor.core.publisher.Mono;
  * Integration class responsible for interacting with the ProductService to retrieve product information.
  */
 @Component
-@RequiredArgsConstructor
 public class ProductServiceIntegration {
 
     private final WebClient productServiceWebClient;
+
+    public ProductServiceIntegration(@Qualifier("productServiceWebClient") WebClient productServiceWebClient) {
+        this.productServiceWebClient = productServiceWebClient;
+    }
 
     /**
      * Retrieves product information by its ID from the ProductService.

@@ -31,17 +31,17 @@ spring:
         - id: core-service
           uri: lb://core-service/
           predicates:
-            - Path=/core-service/products/**
-          filters:
-            - StripPrefix=1
-            - PrefixPath=/core/v1/api
-        - id: core-service-swagger
-          uri: lb://core-service/
-          predicates:
             - Path=/core-service/**
           filters:
             - StripPrefix=1
-            - PrefixPath=/core
+            - PrefixPath=/core/v1/api
+#        - id: core-service-swagger
+#          uri: lb://core-service/
+#          predicates:
+#            - Path=/core-service/**
+#          filters:
+#            - StripPrefix=1
+#            - PrefixPath=/core
         - id: cart-service-specific-path
           uri: lb://cart-service/
           predicates:
@@ -57,13 +57,13 @@ spring:
             - StripPrefix=1
             - PrefixPath=/cart/v1/api
             - CartFilter
-        - id: cart-service-swagger
-          uri: lb://cart-service/
-          predicates:
-            - Path=/cart-service/**
-          filters:
-            - StripPrefix=1
-            - PrefixPath=/cart
+#        - id: cart-service-swagger
+#          uri: lb://cart-service/
+#          predicates:
+#            - Path=/cart-service/**
+#          filters:
+#            - StripPrefix=1
+#            - PrefixPath=/cart
         - id: auth-service
           uri: lb://auth-service/
           predicates:
@@ -71,10 +71,10 @@ spring:
           filters:
             - StripPrefix=1
             - PrefixPath=/auth/v1/api
-        - id: auth-service-swagger
-          uri: lb://auth-service/
-          predicates:
-            - Path=/auth/swagger-ui/**
+#        - id: auth-service-swagger
+#          uri: lb://auth-service/
+#          predicates:
+#            - Path=/auth/swagger-ui/**
         - id: order-service
           uri: lb://order-service/
           predicates:
@@ -82,20 +82,21 @@ spring:
           filters:
             - PrefixPath=/order/v1/api
             - TokenAuthenticationFilter
-        - id: order-service-swagger
-          uri: lb://order-service/
-          predicates:
-            - Path=/order/swagger-ui/**
+#        - id: order-service-swagger
+#          uri: lb://order-service/
+#          predicates:
+#            - Path=/order/swagger-ui/**
         - id: review-service
           uri: lb://review-service/
           predicates:
-            - Path=/review/**
+            - Path=/review-service/**
           filters:
+            - StripPrefix=1
             - PrefixPath=/review/v1/api
-        - id: review-service-swagger
-          uri: lb://review-service/
-          predicates:
-            - Path=/review/**
+#        - id: review-service-swagger
+#          uri: lb://review-service/
+#          predicates:
+#            - Path=/review/**
         - id: discovery-server
           uri: http://eureka-service:8761
           predicates:

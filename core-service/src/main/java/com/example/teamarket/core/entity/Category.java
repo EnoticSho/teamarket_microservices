@@ -1,5 +1,6 @@
 package com.example.teamarket.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,6 +39,7 @@ public class Category {
     private String description;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category")
     private List<Product> productList = new ArrayList<>();
 }

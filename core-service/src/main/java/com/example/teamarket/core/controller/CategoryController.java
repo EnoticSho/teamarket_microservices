@@ -13,7 +13,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/api/category")
+@RequestMapping("/v1/api/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -35,9 +35,9 @@ public class CategoryController {
      * @param id The ID of the category to retrieve.
      * @return The {@link InfoCategoryDto} representing the category with the specified ID.
      */
-    @GetMapping("/{id}")
-    @Operation(summary = "Retrieve a category by ID")
-    private InfoCategoryDto getCategoryById(@PathVariable("id") Long id) {
-        return categoryService.findById(id);
+    @GetMapping("/{title}")
+    @Operation(summary = "Retrieve a category by title")
+    private InfoCategoryDto getCategoryById(@PathVariable("title") String title) {
+        return categoryService.findByName(title);
     }
 }

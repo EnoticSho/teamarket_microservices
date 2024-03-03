@@ -39,8 +39,7 @@ public class Cart implements Serializable {
         CartItem cartItem = itemsMap.get(infoProductDto.productId());
         if (cartItem != null) {
             cartItem.changeQuantity(weight);
-        }
-        else {
+        } else {
             CartItem build = CartItem.builder()
                     .id(infoProductDto.productId())
                     .name(infoProductDto.name())
@@ -113,8 +112,13 @@ public class Cart implements Serializable {
     }
 
     public Cart merge(Cart mergeCart) {
-        mergeCart.getItemsMap().forEach((key, value) -> {
-            if (!this.itemsMap.containsKey(key)) {
+        Map<Long, CartItem> mergeItemsMap = mergeCart.getItemsMap();
+        mergeItemsMap.forEach((key, value) -> {
+            if (this.itemsMap.containsKey(key)) {
+                Integer weightFromMergeCartItem = mergeItemsMap.get(key).getWeight();
+                CartItem currentCartItem = this.itemsMap.get(key);
+                currentCartItem.changeQuantity(weightFromMergeCartItem);
+            } else {
                 this.itemsMap.put(key, value);
             }
         });

@@ -8,6 +8,7 @@ import com.example.teamarket.core.repository.CategoryRepository;
 import com.example.teamarket.core.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -41,9 +42,10 @@ public class CategoryServiceImpl implements CategoryService {
      * @throws ResourceNotFoundException if the category with the given ID is not found.
      */
     @Override
-    public InfoCategoryDto findById(Long id) {
-        return categoryRepository.findById(id)
+    @Transactional
+    public InfoCategoryDto findByName(String title) {
+        return categoryRepository.findByName(title)
                 .map(categoryMapper::categoryToCategoryDto)
-                .orElseThrow(() -> ResourceNotFoundException.of(id, Category.class));
+                .orElseThrow(() -> ResourceNotFoundException.of(title, Category.class));
     }
 }
